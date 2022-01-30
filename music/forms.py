@@ -1,0 +1,13 @@
+from django import forms
+
+from .models import Album
+
+
+class AlbumForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['songs'] = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+
+    class Meta:
+        model = Album
+        fields = '__all__'

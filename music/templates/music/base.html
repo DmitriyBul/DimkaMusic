@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DimkaMusic main page</title>
+    <link href=" {% static 'css/style.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+          integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+<div class="sidebar">
+    <div class="logo_content">
+        <div class="logo">
+            <i class='bx bxl-python'></i>
+            <div class="logo_name">DimkaMusic</div>
+        </div>
+        <i class='bx bx-menu' id="btn"></i>
+    </div>
+    <ul class="nav_list">
+        <li>
+            <i class='bx bx-search'></i>
+            <input type="text" placeholder="Search...">
+            <span class="tooltip">Search</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-music'></i>
+                <span class="links_name">Music Library</span>
+            </a>
+            <span class="tooltip">Music Library</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-user'></i>
+                <span class="links_name">User</span>
+            </a>
+            <span class="tooltip">User</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-heart' ></i>
+                <span class="links_name">Favourite</span>
+            </a>
+            <span class="tooltip">Favourite</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-star'></i>
+                <span class="links_name">News</span>
+            </a>
+            <span class="tooltip">News</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-receipt'></i>
+                <span class="links_name">Genres</span>
+            </a>
+            <span class="tooltip">Genres</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-headphone'></i>
+                <span class="links_name">Popular</span>
+            </a>
+            <span class="tooltip">Popular</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-album' ></i>
+                <span class="links_name">Albums</span>
+            </a>
+            <span class="tooltip">Albums</span>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bx-cog'></i>
+                <span class="links_name">Settings</span>
+            </a>
+            <span class="tooltip">Settings</span>
+        </li>
+    </ul>
+    <div class="profile_content">
+        <div class="profile">
+            <div class="profile_details">
+                <img src="{% static 'images/profile.png' %}">
+                <div class="name_job">
+                    <div class="name">Dimka Robotnic</div>
+                    <div class="job">Backend Developer</div>
+                </div>
+            </div>
+            <i class='bx bx-log-out' id="log_out"></i>
+        </div>
+    </div>
+</div>
+<div class="home_content">
+    {% block content %}{% endblock %}
+
+
+
+
+    <footer>
+        <div class="footer-col">
+            <h3>Top Albums</h3>
+            <li>Manage Reputation</li>
+            <li>Power Tools</li>
+            <li>Managed Website</li>
+            <li>Marketing Service</li>
+        </div>
+        <div class="footer-col">
+            <h3>Top Albums</h3>
+            <li>Manage Reputation</li>
+            <li>Power Tools</li>
+            <li>Managed Website</li>
+            <li>Marketing Service</li>
+        </div>
+        <div class="footer-col">
+            <h3>Top Albums</h3>
+            <li>Manage Reputation</li>
+            <li>Power Tools</li>
+            <li>Managed Website</li>
+            <li>Marketing Service</li>
+        </div>
+        <div class="footer-col">
+            <h3>Top Albums</h3>
+            <li>Manage Reputation</li>
+            <li>Power Tools</li>
+            <li>Managed Website</li>
+            <li>Marketing Service</li>
+        </div>
+        <div class="footer-col">
+            <h3>Newsletter</h3>
+            <p>You can send me email</p>
+            <div class="subscribe">
+                <input type="text" placeholder="Your Email address">
+                <a href="#" class="yellow">Subscribe</a>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>This template build by Dimka Robotnic</p>
+            <div class="pro-links">
+                <div class="fab fa-github"><i class='bx bxl-github'></i></div>
+            </div>
+        </div>
+    </footer>
+</div>
+<script>
+    let btn = document.querySelector("#btn");
+    let sidebar = document.querySelector(".sidebar");
+    let searchBtn = document.querySelector(".bx-search");
+    btn.onclick = function () {
+        sidebar.classList.toggle("active");
+    }
+    btn.onclick = function () {
+        sidebar.classList.toggle("active");
+    }
+    let previous = document.querySelector('#pre');
+let play = document.querySelector('#play');
+let next = document.querySelector('#next');
+let title = document.querySelector('#title');
+let recent_volume = document.querySelector('#volume');
+let volume_show = document.querySelector('#volume_show');
+let slider = document.querySelector('#duration_slider');
+let show_duration = document.querySelector('#show_duration');
+let track_image = document.querySelector('#track_image');
+let auto_play = document.querySelector('#auto');
+let present = document.querySelector('#present');
+let total = document.querySelector('#total');
+let artist = document.querySelector('#artist');
+
+
+let timer;
+let autoplay = 0;
+
+let index_no = 1;
+let playing_song = false;
+
+let song_1 = document.getElementById("1");
+let track = document.createElement('audio');
+let count = document.getElementsByClassName('song').length;
+let song = {};
+
+let song1 = '{{ songs.file.url }}';
+/*for (let i = 1; i < count; i++) {
+  song = {
+      name: "i",
+      path: song1,
+      singer: "XmalDeutschland"
+  };
+  All_song.push(song);
+}*/
+
+
+let All_song = [
+    {
+        name: "i",
+      path: song1,
+      singer: "XmalDeutschland"
+    },
+    {
+        name: "Sinner",
+        path: "music/Sinner.mp3",
+        img: "img/2.jpg",
+        singer: "Drowning Pool"
+    },
+    {
+        name: "Mondlight",
+        path: "music/3_Mondlight.mp3",
+        img: "img/3.jpg",
+        singer: "Xmal Deutschland"
+    },
+    {
+        name: "Пустыня",
+        path: "music/4_Пустыня.mp3",
+        img: "img/4.jpg",
+        singer: "Веселые Ребята"
+    }
+];
+
+function load_track(index_no) {
+    clearInterval(timer);
+    reset_slider();
+    track.src = All_song[index_no].path;
+    title.innerHTML = All_song[index_no].name;
+    artist.innerHTML = All_song[index_no].singer;
+    track.load();
+
+    total.innerHTML = All_song.length;
+    present.innerHTML = index_no + 1;
+    timer = setInterval(range_slider, 1000);
+}
+load_track(index_no + 1);
+
+function mute_sound() {
+    track.volume = 0;
+    volume.value = 0;
+    volume_show.innerHTML = 0;
+}
+
+function reset_slider() {
+    slider.value = 0;
+}
+function justplay() {
+    if(playing_song == false){
+        playsong();
+    } else{
+        pausesong();
+    }
+}
+
+function playsong() {
+    track.play();
+    playing_song = true;
+    play.innerHTML = '<i class="fa fa-pause"></i>';
+}
+
+function pausesong() {
+    track.pause();
+    playing_song = false;
+    play.innerHTML = '<i class="fa fa-play"></i>';
+}
+
+function next_song() {
+    if (index_no < All_song.length - 1){
+        index_no += 1;
+        load_track(index_no);
+        playsong();
+    } else{
+        index_no = 0;
+        load_track(index_no);
+        playsong();
+    }
+}
+
+function previous_song() {
+    if (index_no > 0){
+        index_no -= 1;
+        load_track(index_no);
+        playsong();
+    } else{
+        index_no = All_song.length;
+        load_track(index_no);
+        playsong();
+    }
+}
+
+function volume_change() {
+    volume_show.innerHTML = recent_volume.value;
+    track.volume = recent_volume.value / 100;
+}
+
+function change_duration() {
+    slider_position = track.duration * (slider.value / 100);
+    track.currentTime = slider_position;
+}
+
+function autoplay_switch() {
+    if (autoplay == 1){
+        autoplay = 0;
+        auto_play.style.background = "rgba(255,255,255,0.2)";
+    } else{
+        autoplay = 1;
+        auto_play.style.background = "#FF8A65";
+    }
+}
+
+function range_slider() {
+    let position = 0;
+
+    if(!isNaN(track.duration)){
+        position = track.currentTime * (100 / track.duration);
+        slider.value = position;
+    }
+    if(track.ended){
+        play.innerHTML = '<i class="fa fa-play"></i>';
+        if (autoplay==1){
+            index_no += 1;
+            load_track(index_no);
+            playsong();
+        }
+    }
+}
+
+</script>
+
+</body>
+</html>
