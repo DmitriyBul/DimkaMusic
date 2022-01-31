@@ -9,7 +9,9 @@
 <body>
 {% block content %}
 <div class="main-player">
-
+    {% for song in songs %}
+    <div class="song"></div>
+    {% endfor %}
     <p id="logo"><i class="fa fa-music" aria-hidden="true"></i>music</p>
     <div class="left">
         <img id="track_image">

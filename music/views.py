@@ -19,7 +19,7 @@ class HomeView(ListView):
 class AlbumDetailView(View):
     def get(self, request, ordering='AZ', *args, **kwargs):
         album = get_object_or_404(Album, id=self.kwargs['id'], slug=self.kwargs['slug'])
-        songs = get_object_or_404(Song, album=album, number_in_album=1)
+        songs = Song.objects.filter(album=album)
         template_name = 'music/album_detail.html'
         context = {'album': album, 'songs': songs}
         return render(request, template_name, context)

@@ -175,50 +175,54 @@ let artist = document.querySelector('#artist');
 let timer;
 let autoplay = 0;
 
-let index_no = 1;
+let index_no = 0;
 let playing_song = false;
 
 let song_1 = document.getElementById("1");
 let track = document.createElement('audio');
 let count = document.getElementsByClassName('song').length;
-let song = {};
-
-let song1 = '{{ songs.file.url }}';
-/*for (let i = 1; i < count; i++) {
-  song = {
-      name: "i",
-      path: song1,
-      singer: "XmalDeutschland"
-  };
-  All_song.push(song);
-}*/
+let song_data = [];
 
 
+
+{% for song in songs %}
+    song_data.push('{{song.file.url}}');
+{% endfor %}
+
+let All_song = [];
+/*
 let All_song = [
     {
         name: "i",
-      path: song1,
+      path: 0,
       singer: "XmalDeutschland"
     },
     {
         name: "Sinner",
-        path: "music/Sinner.mp3",
+        path: 0,
         img: "img/2.jpg",
         singer: "Drowning Pool"
     },
     {
         name: "Mondlight",
-        path: "music/3_Mondlight.mp3",
+        path: 0,
         img: "img/3.jpg",
         singer: "Xmal Deutschland"
     },
     {
         name: "Пустыня",
-        path: "music/4_Пустыня.mp3",
+        path: 0,
         img: "img/4.jpg",
         singer: "Веселые Ребята"
     }
-];
+];*/
+for (let i = 0; i < count; i++) {
+  All_song.push({
+      name: "Mondlight",
+        path: song_data[i],
+        singer: "Xmal Deutschland"
+  });
+  }
 
 function load_track(index_no) {
     clearInterval(timer);
@@ -232,8 +236,8 @@ function load_track(index_no) {
     present.innerHTML = index_no + 1;
     timer = setInterval(range_slider, 1000);
 }
-load_track(index_no + 1);
-
+load_track(index_no);
+console.log(index_no);
 function mute_sound() {
     track.volume = 0;
     volume.value = 0;
@@ -268,10 +272,12 @@ function next_song() {
         index_no += 1;
         load_track(index_no);
         playsong();
+        console.log(index_no);
     } else{
         index_no = 0;
         load_track(index_no);
         playsong();
+        console.log(index_no);
     }
 }
 
