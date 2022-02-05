@@ -182,12 +182,14 @@ let song_1 = document.getElementById("1");
 let track = document.createElement('audio');
 let count = document.getElementsByClassName('song').length;
 let song_data = [];
-
-
+let name_data = [];
+let singer_name = '{{album.artist}}';
 
 {% for song in songs %}
     song_data.push('{{song.file.url}}');
+    name_data.push('{{song.name}}');
 {% endfor %}
+
 
 let All_song = [];
 /*
@@ -218,9 +220,9 @@ let All_song = [
 ];*/
 for (let i = 0; i < count; i++) {
   All_song.push({
-      name: "Mondlight",
+      name: name_data[i],
         path: song_data[i],
-        singer: "Xmal Deutschland"
+        singer: singer_name
   });
   }
 
@@ -230,6 +232,7 @@ function load_track(index_no) {
     track.src = All_song[index_no].path;
     title.innerHTML = All_song[index_no].name;
     artist.innerHTML = All_song[index_no].singer;
+    track_image.src = '{{album.image.url}}';
     track.load();
 
     total.innerHTML = All_song.length;
