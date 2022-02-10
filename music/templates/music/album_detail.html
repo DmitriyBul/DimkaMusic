@@ -27,7 +27,7 @@
             <p>/</p>
             <p id="total">4</p>
         </div>
-
+        <a href="{% url 'music:add_album' id=album.id %}">{{ album.name }}</a>
         <p id="title">title.mp3</p>
         <p id="artist">artist name</p>
         <p id="album_name">{{album.name}}</p>

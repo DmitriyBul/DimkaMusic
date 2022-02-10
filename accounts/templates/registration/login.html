@@ -1,0 +1,29 @@
+{% extends "music/base.html" %}
+{% block title %}Log-in{% endblock %}
+{% block content %}
+<section id="album">
+    <h1>Вход</h1>
+    {% if form.errors %}
+        <p>Ваше имя пользователя или пароль не совпадают. Попробуйте снова.</p>
+    {% else %}
+        <p>Пожалуйста, заполните форму, чтобы войти. Если у Вас нет аккаунта, Вы можете <a href="{% url "accounts:register" %}">зарегистрироваться здесь</a></p>
+    {% endif %}
+</section>
+<section id="registration">
+    <div class="reminder">
+        <p>Listen Over 100 Albums</p>
+        <h1>Register To Listen It</h1>
+    </div>
+
+    <div class="form">
+        <form action="{% url 'accounts:login' %}" method="post">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}"/>
+            <div class="btn">
+            <p><input class="yellow" type="submit" value="Войти"></p>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

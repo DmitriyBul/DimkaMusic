@@ -27,7 +27,7 @@
             <span class="tooltip">Search</span>
         </li>
         <li>
-            <a href="#">
+            <a href="{% url 'music:album_list' %}">
                 <i class='bx bx-music'></i>
                 <span class="links_name">Music Library</span>
             </a>
@@ -41,9 +41,9 @@
             <span class="tooltip">User</span>
         </li>
         <li>
-            <a href="#">
+            <a href="{% url 'accounts:dashboard' %}">
                 <i class='bx bx-heart' ></i>
-                <span class="links_name">Favourite</span>
+                <span class="links_name">My Library</span>
             </a>
             <span class="tooltip">Favourite</span>
         </li>
@@ -86,13 +86,22 @@
     <div class="profile_content">
         <div class="profile">
             <div class="profile_details">
+                {% if user.is_authenticated %}
                 <img src="{% static 'images/profile.png' %}">
                 <div class="name_job">
-                    <div class="name">Dimka Robotnic</div>
-                    <div class="job">Backend Developer</div>
+                <div class="name">{{ user.username}}</div>
                 </div>
+                {% else %}
+                <img src="{% static 'images/profile.png' %}">
+                <div class="name_job">
+                    <a href="{% url 'accounts:register' %}">Register </a> or
+                    <a href="{% url 'accounts:login' %}"> Login</a>
+                <div class="name">{{ user.username}}</div>
+                </div>
+
+                {% endif %}
             </div>
-            <i class='bx bx-log-out' id="log_out"></i>
+            <a href="{% url 'accounts:logout' %}"><i class='bx bx-log-out' id="log_out"></i></a>
         </div>
     </div>
 </div>
@@ -140,23 +149,24 @@
             </div>
         </div>
         <div class="copyright">
-            <p>This template build by Dimka Robotnic</p>
+            <p>This template built by Dimka Robotnic</p>
             <div class="pro-links">
-                <div class="fab fa-github"><i class='bx bxl-github'></i></div>
+                <div><i class='bx bxl-github'></i></div>
             </div>
         </div>
     </footer>
 </div>
+</body>
 <script>
     let btn = document.querySelector("#btn");
     let sidebar = document.querySelector(".sidebar");
     let searchBtn = document.querySelector(".bx-search");
     btn.onclick = function () {
         sidebar.classList.toggle("active");
-    }
+    };
     btn.onclick = function () {
         sidebar.classList.toggle("active");
-    }
+    };
     let previous = document.querySelector('#pre');
 let play = document.querySelector('#play');
 let next = document.querySelector('#next');
@@ -171,6 +181,9 @@ let present = document.querySelector('#present');
 let total = document.querySelector('#total');
 let artist = document.querySelector('#artist');
 
+let current_time = document.querySelector('#current_time');
+let total_time = document.querySelector('#total_time');
+var duration;
 
 let timer;
 let autoplay = 0;
@@ -180,6 +193,11 @@ let playing_song = false;
 
 let song_1 = document.getElementById("1");
 let track = document.createElement('audio');
+track.setAttribute("preload", "metadata");
+
+
+
+
 let count = document.getElementsByClassName('song').length;
 let song_data = [];
 let name_data = [];
@@ -192,32 +210,7 @@ let singer_name = '{{album.artist}}';
 
 
 let All_song = [];
-/*
-let All_song = [
-    {
-        name: "i",
-      path: 0,
-      singer: "XmalDeutschland"
-    },
-    {
-        name: "Sinner",
-        path: 0,
-        img: "img/2.jpg",
-        singer: "Drowning Pool"
-    },
-    {
-        name: "Mondlight",
-        path: 0,
-        img: "img/3.jpg",
-        singer: "Xmal Deutschland"
-    },
-    {
-        name: "Пустыня",
-        path: 0,
-        img: "img/4.jpg",
-        singer: "Веселые Ребята"
-    }
-];*/
+
 for (let i = 0; i < count; i++) {
   All_song.push({
       name: name_data[i],
@@ -234,13 +227,14 @@ function load_track(index_no) {
     artist.innerHTML = All_song[index_no].singer;
     track_image.src = '{{album.image.url}}';
     track.load();
-
     total.innerHTML = All_song.length;
     present.innerHTML = index_no + 1;
     timer = setInterval(range_slider, 1000);
 }
+
 load_track(index_no);
-console.log(index_no);
+
+
 function mute_sound() {
     track.volume = 0;
     volume.value = 0;
@@ -275,12 +269,10 @@ function next_song() {
         index_no += 1;
         load_track(index_no);
         playsong();
-        console.log(index_no);
     } else{
         index_no = 0;
         load_track(index_no);
         playsong();
-        console.log(index_no);
     }
 }
 
@@ -302,8 +294,10 @@ function volume_change() {
 }
 
 function change_duration() {
-    slider_position = track.duration * (slider.value / 100);
-    track.currentTime = slider_position;
+       slider_position = track.duration * (slider.value / 100);
+       track.oncanplay = function() {
+           track.currentTime = slider_position;
+       };
 }
 
 function autoplay_switch() {
@@ -334,6 +328,4 @@ function range_slider() {
 }
 
 </script>
-
-</body>
 </html>

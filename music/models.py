@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 # Create your models here.
@@ -56,3 +57,9 @@ class Song(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class UserLibrarylist(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    album = models.ForeignKey(Album, on_delete=models.CASCADE)
+    slug = models.CharField(max_length=30, null=True, blank=True)

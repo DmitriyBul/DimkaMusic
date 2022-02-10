@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .forms import AlbumForm
-from .models import Artist, Album, Song
+from .models import Artist, Album, Song, UserLibrarylist
 
 
 @admin.register(Artist)
@@ -43,9 +43,12 @@ class AlbumAdmin(admin.ModelAdmin):
         songs = request.FILES.getlist('songs')
         i = 1
         for song in songs:
-            Song.objects.create(album=obj, name=song.name, file=song, number_in_album=i)
+            index = song.name.rfind('.')
+            name = song.name[:index]
+            Song.objects.create(album=obj, name=name, file=song, number_in_album=i)
             i += 1
         return super().save_model(request, obj, form, change)
+
 
 @admin.register(Song)
 class SongAdmin(admin.ModelAdmin):
@@ -53,3 +56,9 @@ class SongAdmin(admin.ModelAdmin):
     list_filter = ['name', 'album']
     list_editable = ['number_in_album', 'album']
 
+
+@admin.register(UserLibrarylist)
+class UserLibrarylistAdmin(admin.ModelAdmin):
+    list_display = ['user', 'album']
+    list_filter = ['user', 'album']
+    list_editable = ['album']
