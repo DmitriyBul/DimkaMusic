@@ -30,6 +30,7 @@ class Album(models.Model):
     artist = models.ForeignKey(Artist,
                                related_name='albums',
                                on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ('name',)

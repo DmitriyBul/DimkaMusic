@@ -62,10 +62,13 @@ def email_login(request):
 
 class UserLibraryView(ListView, LoginRequiredMixin):
     def get(self, request, ordering='AZ', *args, **kwargs):
-        user_album = list(UserLibrarylist.objects.filter(user=request.user).values_list('album__name', flat=True))
-        print(user_album)
-        albums = Album.objects.filter(name__in=user_album)
-        #albums = Album.objects.filter(user=request.user).order_by('name')
-        template_name = 'account/user_page.html'
-        context = {'albums': albums}
-        return render(request, template_name, context)
+        if request.user.is_authenticated:
+            user_album = list(UserLibrarylist.objects.filter(user=request.user).values_list('album__name', flat=True))
+            print(user_album)
+            albums = Album.objects.filter(name__in=user_album)
+            # albums = Album.objects.filter(user=request.user).order_by('name')
+            template_name = 'account/user_page.html'
+            context = {'albums': albums}
+            return render(request, template_name, context)
+        else:
+            return redirect('login/')

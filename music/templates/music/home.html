@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 {% extends "music/base.html" %}
@@ -11,62 +10,64 @@
 <body>
 {% block content%}
 <section id="home">
-        <h2>Welcome to DimkaMusic Web App</h2>
-        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore
-            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-            commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-            est
-            laborum."</p>
-        <div class="btn">
-            <a class="blue" href="#">To albums</a>
-            <a class="yellow" href="#">News</a>
-        </div>
-    </section>
+    <h2>Welcome to DimkaMusic Web App</h2>
+    <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+        dolore
+        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+        est
+        laborum."</p>
+    <div class="btn">
+        <a class="blue" href="#">To albums</a>
+        <a class="yellow" href="#">News</a>
+    </div>
+</section>
 
-    <section id="album">
-        <h1>Albums</h1>
-        <p>Lorem ipsum fgdjhgjdfhghudfhvu udfhug hdfuhgdf u fdhgu</p>
-        <div class="album-box">
-            {% for album in albums %}
-            <div class="albums">
-                <a href="{{ album.get_absolute_url }}">
-                <img src="{{ album.image.url }}" style="height: 350px;"></a>
-                <div class="details">
-                    <h6>{{ album.artist }}</h6>
-                    <span>{{ album.year }}</span>
-                    <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
-                    <div class="star">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span>(239)</span>
-                    </div>
+<section id="album">
+    <h1>Albums</h1>
+    <p>Lorem ipsum fgdjhgjdfhghudfhvu udfhug hdfuhgdf u fdhgu</p>
+    <div class="album-box">
+        {% for album in albums %}
+        <div class="albums">
+            <a href="{{ album.get_absolute_url }}">
+                <img src="{{ album.image.url }}"></a>
+            <div class="details">
+                <h6>{{ album.artist }}</h6>
+                <span>{{ album.year }}</span>
+                <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
+                <div class="star">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <span>(239)</span>
                 </div>
             </div>
-            {% endfor %}
+        </div>
+        {% endfor %}
 
-        </div>
-    </section>
-    <section id="registration">
-        <div class="reminder">
-            <p>Listen Over 100 Albums</p>
-            <h1>Register To Listen It</h1>
-        </div>
-        <div class="form">
-            <h3>Create Free Account Now!</h3>
-            <input type="text" placeholder="Name" name="">
-            <input type="text" placeholder="Email Address" name="">
-            <input type="text" placeholder="Password" name="">
+    </div>
+</section>
+<section id="registration">
+    <div class="reminder">
+        <p>Listen Over 100 Albums</p>
+        <h1>Register To Listen It</h1>
+    </div>
+    <div class="form">
+        <form action="." method="post">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}"/>
             <div class="btn">
-                <a class="yellow" href="#">Submit Form</a>
+                <p><input class="yellow" type="submit" value="Register"></p>
             </div>
-        </div>
-    </section>
+        </form>
+    </div>
+
+</section>
 {% endblock %}
 </body>
 </html>

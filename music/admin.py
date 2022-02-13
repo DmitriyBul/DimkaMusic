@@ -13,7 +13,7 @@ class ArtistAdmin(admin.ModelAdmin):
 
 @admin.register(Album)
 class AlbumAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug', 'year', 'artist']
+    list_display = ['name', 'slug', 'year', 'artist', 'created']
     list_filter = ['name', 'year', 'artist']
     list_editable = ['year', 'artist']
     prepopulated_fields = {'slug': ('name',)}
