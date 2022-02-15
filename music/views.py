@@ -10,7 +10,7 @@ import json
 
 from accounts.forms import UserRegistrationForm
 from accounts.models import Profile
-from .models import Album, Song, UserLibrarylist
+from .models import Album, Song, UserLibrarylist, Artist
 
 
 class HomeView(ListView):
@@ -53,9 +53,20 @@ def add_album_to_library(request, id):
 class NewAlbumsListView(ListView):
     def get(self, request, ordering='AZ', *args, **kwargs):
         albums = Album.objects.order_by('-created')[:12]
-        lst = Paginator(albums, 6)
+        lst = Paginator(albums, 1)
         page_number = request.GET.get('page')
         page_obj = lst.get_page(page_number)
         template_name = 'music/new_albums.html'
+        context = {'page_obj': page_obj}
+        return render(request, template_name, context)
+
+
+class ArtistsListView(ListView):
+    def get(self, request, ordering='AZ', *args, **kwargs):
+        artists = Artist.objects.order_by('name')
+        lst = Paginator(artists, 15)
+        page_number = request.GET.get('page')
+        page_obj = lst.get_page(page_number)
+        template_name = 'music/artists.html'
         context = {'page_obj': page_obj}
         return render(request, template_name, context)

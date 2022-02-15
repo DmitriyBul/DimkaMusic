@@ -18,6 +18,8 @@ class Artist(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('music:artist_detail', args=[self.id, self.slug])
     # def get_absolute_url(self):
     # return reverse('products:product_list_by_category', args=[self.slug])
 

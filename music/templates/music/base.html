@@ -14,11 +14,13 @@
 <body>
 <div class="sidebar">
     <div class="logo_content">
+        <a href="{% url 'music:home' %}">
         <div class="logo">
             <i class='bx bxl-python'></i>
             <div class="logo_name">DimkaMusic</div>
         </div>
         <i class='bx bx-menu' id="btn"></i>
+        </a>
     </div>
     <ul class="nav_list">
         <li>
@@ -27,7 +29,7 @@
             <span class="tooltip">Search</span>
         </li>
         <li>
-            <a href="{% url 'music:album_list' %}">
+            <a href="{% url 'music:artists' %}">
                 <i class='bx bx-music'></i>
                 <span class="links_name">Music Library</span>
             </a>

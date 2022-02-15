@@ -8,9 +8,10 @@ from . import views
 app_name = 'music'
 urlpatterns = [
     path('', lambda req: redirect('/home/')),
-    path('home/', views.HomeView.as_view(), name='album_list'),
+    path('home/', views.HomeView.as_view(), name='home'),
     path('<int:id>/<slug:slug>/', views.AlbumDetailView.as_view(), name='album_detail'),
     path('music/<int:id>/add/', views.add_album_to_library, name='add_album'),
+    path('artists/', views.ArtistsListView.as_view(), name='artists'),
     path('new_albums/', views.NewAlbumsListView.as_view(), name='new_albums'),
 ]
 if settings.DEBUG:

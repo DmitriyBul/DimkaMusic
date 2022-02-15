@@ -1,30 +1,20 @@
 {% extends "music/base.html" %}
 {% load static %}
 {% block title %}
-New Albums
+Artists List
 {% endblock %}
 {% block content %}
 
 <section id="album">
-    <h1>Albums</h1>
-    <p>Lorem ipsum fgdjhgjdfhghudfhvu udfhug hdfuhgdf u fdhgu</p>
+    <h1>Artists</h1>
+    <p>Full list of artists</p>
     <div class="album-box">
-        {% for album in page_obj %}
+        {% for artist in page_obj %}
         <div class="albums">
-            <a href="{{ album.get_absolute_url }}">
-                <img src="{{ album.image.url }}"></a>
+
+                <img src="{{ artist.image }}"></a>
             <div class="details">
-                <h6>{{ album.artist }}</h6>
-                <span>{{ album.year }}</span>
-                <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
-                <div class="star">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <span>(239)</span>
-                </div>
+                <h6>{{ artist.name }}</h6>
             </div>
         </div>
         {% endfor %}
