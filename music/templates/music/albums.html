@@ -1,0 +1,38 @@
+{% extends "music/base.html" %}
+{% load static %}
+{% block title %}
+New Albums
+{% endblock %}
+{% block content %}
+
+
+
+<section id="album">
+    <h1>Albums</h1>
+    <div class="album-box">
+        {% for album in page_obj %}
+        <div class="albums">
+            <a href="{{ album.get_absolute_url }}">
+                <img src="{{ album.image.url }}" height="50"></a>
+            <div class="details">
+                <span>{{ album.artist }}</span>
+                <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
+                <div class="star">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <span>(239)</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
+
+
+
+
+{% endblock %}

@@ -17,6 +17,7 @@ class HomeView(ListView):
     def get(self, request, category_slug=None, ordering='AZ', *args, **kwargs):
         albums = Album.objects.all()[:6]
         template_name = 'music/home.html'
+        # profile = get_object_or_404(Profile, user=request.user)
         form = UserRegistrationForm()
         context = {'albums': albums, 'form': form}
         return render(request, template_name, context)
@@ -53,7 +54,7 @@ def add_album_to_library(request, id):
 class NewAlbumsListView(ListView):
     def get(self, request, ordering='AZ', *args, **kwargs):
         albums = Album.objects.order_by('-created')[:12]
-        lst = Paginator(albums, 1)
+        lst = Paginator(albums, 12)
         page_number = request.GET.get('page')
         page_obj = lst.get_page(page_number)
         template_name = 'music/new_albums.html'
@@ -64,9 +65,29 @@ class NewAlbumsListView(ListView):
 class ArtistsListView(ListView):
     def get(self, request, ordering='AZ', *args, **kwargs):
         artists = Artist.objects.order_by('name')
-        lst = Paginator(artists, 15)
+        lst = Paginator(artists, 12)
         page_number = request.GET.get('page')
         page_obj = lst.get_page(page_number)
         template_name = 'music/artists.html'
+        context = {'page_obj': page_obj}
+        return render(request, template_name, context)
+
+
+class ArtistDetailView(View):
+    def get(self, request, ordering='AZ', *args, **kwargs):
+        artist = get_object_or_404(Artist, id=self.kwargs['id'], slug=self.kwargs['slug'])
+        albums = Album.objects.filter(artist=artist).order_by('year')
+        template_name = 'music/artist_detail.html'
+        context = {'albums': albums, 'artist': artist}
+        return render(request, template_name, context)
+
+
+class AlbumsListView(ListView):
+    def get(self, request, ordering='AZ', *args, **kwargs):
+        albums = Album.objects.order_by('name')
+        lst = Paginator(albums, 12)
+        page_number = request.GET.get('page')
+        page_obj = lst.get_page(page_number)
+        template_name = 'music/albums.html'
         context = {'page_obj': page_obj}
         return render(request, template_name, context)

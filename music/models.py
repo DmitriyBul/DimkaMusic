@@ -8,12 +8,13 @@ from django.urls import reverse
 class Artist(models.Model):
     name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, unique=True)
-    image = models.ImageField(upload_to='music/artist', blank=True)
+    image = models.ImageField(upload_to='artists/', blank=True)
 
     class Meta:
         ordering = ('name',)
         verbose_name = 'artist'
         verbose_name_plural = 'artists'
+        index_together = (('id', 'slug'),)
 
     def __str__(self):
         return self.name

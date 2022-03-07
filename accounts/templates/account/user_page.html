@@ -9,7 +9,7 @@
             {% for album in albums %}
             <div class="albums">
                 <a href="{{ album.get_absolute_url }}">
-                <img src="{{ album.image.url }}" style="height: 350px;"></a>
+                <img src="{{ album.image.url }}" ></a>
                 <div class="details">
                     <h6>{{ album.artist }}</h6>
                     <span>{{ album.year }}</span>

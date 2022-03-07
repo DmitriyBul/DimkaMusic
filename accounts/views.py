@@ -72,3 +72,11 @@ class UserLibraryView(ListView, LoginRequiredMixin):
             return render(request, template_name, context)
         else:
             return redirect('login/')
+
+
+class UserPageView(View, LoginRequiredMixin):
+    def get(self, request, ordering='AZ', *args, **kwargs):
+        user = request.user
+        template_name = 'account/profile_card.html'
+        context = {'user': user}
+        return render(request, template_name, context)

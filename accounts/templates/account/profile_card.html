@@ -1,0 +1,47 @@
+{% extends "music/base.html" %}
+{% block title %}Profile page{% endblock %}
+{% block content %}
+<section id="album">
+<div class="profile_page">
+<div class="wrapper">
+    <div class="profile_left">
+        <img src="{{ user_profile.photo.url }}" alt="user" width="100">
+        <h4>{{user.username}}</h4>
+        <p>UI Developer</p>
+    </div>
+    <div class="profile_right">
+
+        <div class="profile_info">
+            <h3>Information</h3>
+            <div class="profile_info_data">
+                <div class="profile_data">
+                    <h4>Email</h4>
+                    <p>{{user.email}}</p>
+                </div>
+                <div class="profile_data">
+                    <h4>Phone</h4>
+                    <p>0001-213-999876</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="projects">
+            <h3>Projects</h3>
+            <div class="projects_data">
+                <div class="profile_data">
+                    <h4>Recent</h4>
+                    <p>Lorem ipsum dolor sit amet.</p>
+                </div>
+                <div class="profile_data">
+                    <h4>Most viewed</h4>
+                    <p>dolor sit amet.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+</section>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+{% endblock %}

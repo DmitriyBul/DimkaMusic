@@ -9,9 +9,11 @@ app_name = 'music'
 urlpatterns = [
     path('', lambda req: redirect('/home/')),
     path('home/', views.HomeView.as_view(), name='home'),
+    path('artists/', views.ArtistsListView.as_view(), name='artists'),
+    path('albums/', views.AlbumsListView.as_view(), name='albums'),
     path('<int:id>/<slug:slug>/', views.AlbumDetailView.as_view(), name='album_detail'),
     path('music/<int:id>/add/', views.add_album_to_library, name='add_album'),
-    path('artists/', views.ArtistsListView.as_view(), name='artists'),
+    path('artists/<int:id>/<slug:slug>/', views.ArtistDetailView.as_view(), name='artist_detail'),
     path('new_albums/', views.NewAlbumsListView.as_view(), name='new_albums'),
 ]
 if settings.DEBUG:

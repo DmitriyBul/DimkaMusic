@@ -1,0 +1,38 @@
+{% extends "music/base.html" %}
+{% load static %}
+{% block title %}
+{% endblock %}
+{% block content %}
+<section id="home">
+    <h2>{{ artist.name }}</h2>
+    <img src="{{ artist.image.url }}">
+</section>
+
+<section id="album">
+    <h1>{{ artist.name }}</h1>
+    <p>Albums</p>
+    <div class="album-box">
+        {% for album in albums %}
+        <div class="albums">
+            <a href="{{ album.get_absolute_url }}">
+                <img src="{{ album.image.url }}"></a>
+            <div class="details">
+                <h6>{{ album.artist }}</h6>
+                <span>{{ album.year }}</span>
+                <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
+                <div class="star">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <span>(239)</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
+
+{% endblock %}
