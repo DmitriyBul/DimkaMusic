@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -10,6 +11,7 @@ import json
 
 from accounts.forms import UserRegistrationForm
 from accounts.models import Profile
+from music.forms import SearchForm
 from .models import Album, Song, UserLibrarylist, Artist
 
 
@@ -91,3 +93,15 @@ class AlbumsListView(ListView):
         template_name = 'music/albums.html'
         context = {'page_obj': page_obj}
         return render(request, template_name, context)
+
+
+class SearchResultsView(ListView):
+    model = Album
+    template_name = 'music/search.html'
+
+    def get_queryset(self):  # новый
+        query = self.request.GET.get('q')
+        album_list = Album.objects.annotate(
+            search=SearchVector('name', 'artist'),
+        ).filter(search=query)
+        return album_list

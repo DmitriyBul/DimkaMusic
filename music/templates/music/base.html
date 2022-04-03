@@ -23,7 +23,11 @@
     <ul class="nav_list">
         <li>
             <i class='bx bx-search'></i>
-            <input type="text" placeholder="Search...">
+            <form class="search_form" action="{% url 'music:search' %}" method="get">
+                    <input name="q" type="text" placeholder="Search">
+                    <button type="submit">
+                    </button>
+                </form>
             <span class="tooltip">Search</span>
         </li>
         <li>

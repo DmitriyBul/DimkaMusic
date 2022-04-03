@@ -11,3 +11,9 @@ class AlbumForm(forms.ModelForm):
     class Meta:
         model = Album
         fields = '__all__'
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField()
+
+
