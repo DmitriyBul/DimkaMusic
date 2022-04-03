@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-
+from taggit.managers import TaggableManager
 # Create your models here.
 from django.urls import reverse
 
@@ -34,6 +34,7 @@ class Album(models.Model):
                                related_name='albums',
                                on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
+    tags = TaggableManager()
 
     class Meta:
         ordering = ('name',)
@@ -48,7 +49,7 @@ class Album(models.Model):
 
 class Song(models.Model):
     name = models.CharField(max_length=200, db_index=True)
-    file = models.FileField(upload_to='music/song')
+    file = models.FileField(upload_to='music/song', blank=True)
     album = models.ForeignKey(Album,
                               related_name='songs',
                               on_delete=models.CASCADE)

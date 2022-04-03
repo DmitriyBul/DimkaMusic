@@ -6,10 +6,10 @@
         <h1>Albums</h1>
         <p>Lorem ipsum fgdjhgjdfhghudfhvu udfhug hdfuhgdf u fdhgu</p>
         <div class="album-box">
-            {% for album in albums %}
+            {% for album in page_obj %}
             <div class="albums">
                 <a href="{{ album.get_absolute_url }}">
-                <img src="{{ album.image.url }}" ></a>
+                <img src="{{ album.image.url }}" style="width: 30%; height: auto"></a>
                 <div class="details">
                     <h6>{{ album.artist }}</h6>
                     <span>{{ album.year }}</span>
@@ -28,4 +28,30 @@
 
         </div>
     </section>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a class="pagination-action" href="?page=1">
+        <i class="fa fa-angle-double-left" aria-hidden="true"></i> </a>
+    <a class="pagination-action" href="?page={{ page_obj.previous_page_number }}">
+        <i class="fa fa-angle-left" aria-hidden="true"></i>
+    </a>
+    {% endif %}
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="pagination-number pagination-current">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a class="pagination-number" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+        <a class="pagination-action" href="?page={{ page_obj.next_page_number }}">
+            <i class="fa fa-angle-right" aria-hidden="true"></i>
+        </a>
+        <a class="pagination-action" href="?page={{ page_obj.paginator.num_pages }}">
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        </a>
+    {% endif %}
+</div>
+<br>
 {% endblock %}

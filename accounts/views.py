@@ -1,3 +1,5 @@
+from django.core.paginator import Paginator
+
 from music.models import Album, UserLibrarylist
 from .models import Profile
 
@@ -65,10 +67,13 @@ class UserLibraryView(ListView, LoginRequiredMixin):
         if request.user.is_authenticated:
             user_album = list(UserLibrarylist.objects.filter(user=request.user).values_list('album__name', flat=True))
             print(user_album)
-            albums = Album.objects.filter(name__in=user_album)
+            albums = Album.objects.filter(name__in=user_album).order_by('name')
+            lst = Paginator(albums, 12)
+            page_number = request.GET.get('page')
+            page_obj = lst.get_page(page_number)
             # albums = Album.objects.filter(user=request.user).order_by('name')
             template_name = 'account/user_page.html'
-            context = {'albums': albums}
+            context = {'page_obj': page_obj}
             return render(request, template_name, context)
         else:
             return redirect('login/')

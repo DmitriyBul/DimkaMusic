@@ -5,28 +5,47 @@
 {% block content %}
 
     <section id="album">
-    <h1>Albums</h1>
-    <div class="album-box">
-        {% for album in album_list %}
-        <div class="albums">
-            <a href="{{ album.get_absolute_url }}">
-                <img src="{{ album.image.url }}" style="height: 30%; width: auto" ></a>
-            <div class="details">
-                <span>{{ album.artist }}</span>
-                <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
-                <div class="star">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <span>(239)</span>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
+        {% if results.album_list %}
+            <h1>Albums</h1>
+            <div class="album-box">
+                {% for album in results.album_list %}
+                    <div class="albums">
+                        <a href="{{ album.get_absolute_url }}">
+                            <img src="{{ album.image.url }}" style="height: 30%; width: auto"></a>
+                        <div class="details">
+                            <span>{{ album.artist }}</span>
+                            <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
+                            <div class="star">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span>(239)</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
 
-    </div>
-</section>
+            </div>
+        {% endif %}
+    {% if results.artist_list %}
+        <h1>Artists</h1>
+        <div class="album-box">
+            {% for artist in results.artist_list %}
+                <div class="albums">
+                        <a href="{{ artist.get_absolute_url }}">
+                            <img src="{{ artist.image.url }}" style="height: 30%; width: auto"></a>
+                        <div class="details">
+
+                            <a href="{{ artist.get_absolute_url }}"><h6>{{ artist.name }}</h6></a>
+
+                        </div>
+                    </div>
+            {% endfor %}
+
+        </div>
+    {% endif %}
+    </section>
 
 {% endblock %}

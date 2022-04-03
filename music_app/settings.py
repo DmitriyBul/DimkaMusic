@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'music',
+    'taggit',
 ]
 
 MIDDLEWARE = [
@@ -74,7 +75,7 @@ WSGI_APPLICATION = 'music_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'musicdb',  # Or path to database file if using sqlite3.
         'USER': 'music_user',  # Not used with sqlite3.
         'PASSWORD': '0000',  # Not used with sqlite3.

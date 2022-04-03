@@ -1,37 +1,73 @@
 {% extends "music/base.html" %}
 {% load static %}
 {% block title %}
-New Albums
+    New Albums
 {% endblock %}
 {% block content %}
 
 
 
-<section id="album">
-    <h1>Albums</h1>
-    <div class="album-box">
-        {% for album in page_obj %}
-        <div class="albums">
-            <a href="{{ album.get_absolute_url }}">
-                <img src="{{ album.image.url }}" height="50"></a>
-            <div class="details">
-                <span>{{ album.artist }}</span>
-                <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
-                <div class="star">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <span>(239)</span>
+    <section id="album">
+        {% if tag %}
+                    <h2>Albums tagged with "{{ tag.name }}"</h2>
+                {% endif %}
+        <div class="album-box">
+            {% for album in page_obj %}
+                <div class="albums">
+                    <a href="{{ album.get_absolute_url }}">
+                        <img src="{{ album.image.url }}" height="50"></a>
+                    <div class="details">
+                        <span>{{ album.artist }}</span>
+                        <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
+                        <div class="star">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>(239)</span>
+                        </div>
+                        <p class="tags">
+                            Tags:
+                            {% for tag in album.tags.all %}
+                                <a href="{% url "music:albums_by_tag" tag.slug %}">
+                                    {{ tag.name }}
+                                </a>
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
                 </div>
-            </div>
+            {% endfor %}
+
         </div>
+    </section>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a class="pagination-action" href="?page=1">
+                <i class="fa fa-angle-double-left" aria-hidden="true"></i> </a>
+            <a class="pagination-action" href="?page={{ page_obj.previous_page_number }}">
+                <i class="fa fa-angle-left" aria-hidden="true"></i>
+            </a>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <span class="pagination-number pagination-current">{{ num }}</span>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a class="pagination-number" href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
         {% endfor %}
-
+        {% if page_obj.has_next %}
+            <a class="pagination-action" href="?page={{ page_obj.next_page_number }}">
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </a>
+            <a class="pagination-action" href="?page={{ page_obj.paginator.num_pages }}">
+                <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            </a>
+        {% endif %}
     </div>
-</section>
-
+    <br>
 
 
 
