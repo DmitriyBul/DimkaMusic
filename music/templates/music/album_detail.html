@@ -44,6 +44,20 @@
         <button id="auto" onclick="autoplay_switch()">Auto play <i class="fa fa-circle-o-notch" aria-hidden="true"></i>
         </button>
         {% if user.is_authenticated %}
+            <div class="star">
+            <form class="rate-form" action="" method="POST" id="{{album.id}}">
+                {% csrf_token %}
+
+                            <button type="submit" class="fa fa-star" id="first"></button>
+                            <button type="submit" class="fa fa-star" id="second"></button>
+                            <button type="submit" class="fa fa-star" id="third"></button>
+                            <button type="submit" class="fa fa-star" id="fourth"></button>
+                            <button type="submit" class="fa fa-star" id="fifth"></button>
+
+
+            </form>
+                        </div>
+                    <div id="confirm-box"></div>
         <button class="add_to_f">
                 <a href="{% url 'music:add_album' id=album.id %}" class="yellow">Add to Favourites</a>
             </button>

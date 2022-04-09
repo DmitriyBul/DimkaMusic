@@ -12,11 +12,13 @@ urlpatterns = [
     path('artists/', views.ArtistsListView.as_view(), name='artists'),
     path('albums/', views.AlbumsListView.as_view(), name='albums'),
     path('<int:id>/<slug:slug>/', views.AlbumDetailView.as_view(), name='album_detail'),
+    path('<int:id>/<slug:slug>/rate_album/', views.rate_album, name='rate_album'),
+
     path('music/<int:id>/add/', views.add_album_to_library, name='add_album'),
     path('artists/<int:id>/<slug:slug>/', views.ArtistDetailView.as_view(), name='artist_detail'),
     path('new_albums/', views.NewAlbumsListView.as_view(), name='new_albums'),
     path('search/', views.SearchResultsView.as_view(), name='search'),
-    path('tag/<slug:tag_slug>/', views.AlbumsListView.as_view(), name='albums_by_tag')
+    path('tag/<slug:tag_slug>/', views.AlbumsListView.as_view(), name='albums_by_tag'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,8 +1,10 @@
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from taggit.managers import TaggableManager
 # Create your models here.
 from django.urls import reverse
+from django.contrib.postgres.fields import ArrayField
 
 
 class Artist(models.Model):
@@ -68,3 +70,18 @@ class UserLibrarylist(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     album = models.ForeignKey(Album, on_delete=models.CASCADE)
     slug = models.CharField(max_length=30, null=True, blank=True)
+
+
+# Doesn't work
+# class AlbumRatingByUser(models.Model):
+    # album = models.ForeignKey(Album, on_delete=models.CASCADE)
+    # ratings = ArrayField(models.IntegerField(default=0, blank=True,
+                                             # validators=[MaxValueValidator(5),
+                                                         # MinValueValidator(0)]), blank=True)
+    # users = ArrayField(models.CharField(max_length=200, blank=True), blank=True)
+
+
+class UsersAlbumRating(models.Model):
+    album = models.ForeignKey(Album, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=0, blank=True)
