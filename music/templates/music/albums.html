@@ -1,5 +1,6 @@
 {% extends "music/base.html" %}
 {% load static %}
+{% load rating_tags %}
 {% block title %}
     New Albums
 {% endblock %}
@@ -21,14 +22,16 @@
                         <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
                         <div class="star">
                             {{ album.rating }}
-                            <span class="fa fa-star" id="first_star"></span>
-                            <span class="fa fa-star" id="second_star"></span>
-                            <span class="fa fa-star" id="third_star"></span>
-                            <span class="fa fa-star" id="fourth_star"></span>
-                            <span class="fa fa-star" id="fifth_star"></span>
+                            {% for i in '12345'|make_list %}
+                                {% if forloop.counter <=  album.rating %}
+                                    <span class="fa fa-star checked"></span>
+                                {% else %}
+                                    <span class="fa fa-star"></span>
+                                {% endif %}
+                            {% endfor %}
                             <span>({{ album.rating_count }})</span>
                         </div>
-                    <div id="confirm-box"></div>
+                        <div id="confirm-box"></div>
                         <p class="tags">
                             Tags:
                             {% for tag in album.tags.all %}
