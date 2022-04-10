@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import Avg, Count, Q
 from taggit.managers import TaggableManager
 # Create your models here.
 from django.urls import reverse
@@ -48,6 +49,29 @@ class Album(models.Model):
     def get_absolute_url(self):
         return reverse('music:album_detail', args=[self.id, self.slug])
 
+    @property
+    def rating(self):
+        stars_average = (UsersAlbumRating.objects.filter(album__name=self.name)
+                         .annotate(avg=Avg('rating'))
+                         ).values_list('rating', flat=True)
+        if len(stars_average) == 0:
+            stars_avg_el = 0
+        else:
+            stars_avg_el = stars_average[0]
+        return stars_avg_el
+
+
+    @property
+    def rating_count(self):
+        stars_count = (UsersAlbumRating.objects.filter(album__name=self.name).filter(rating__gt=0)
+                       .annotate(cnt=Count('user'))
+                       ).values_list('cnt', flat=True)
+        if len(stars_count) == 0:
+            stars_count_el = 0
+        else:
+            stars_count_el = stars_count[0]
+        return stars_count_el
+
 
 class Song(models.Model):
     name = models.CharField(max_length=200, db_index=True)
@@ -74,11 +98,11 @@ class UserLibrarylist(models.Model):
 
 # Doesn't work
 # class AlbumRatingByUser(models.Model):
-    # album = models.ForeignKey(Album, on_delete=models.CASCADE)
-    # ratings = ArrayField(models.IntegerField(default=0, blank=True,
-                                             # validators=[MaxValueValidator(5),
-                                                         # MinValueValidator(0)]), blank=True)
-    # users = ArrayField(models.CharField(max_length=200, blank=True), blank=True)
+# album = models.ForeignKey(Album, on_delete=models.CASCADE)
+# ratings = ArrayField(models.IntegerField(default=0, blank=True,
+# validators=[MaxValueValidator(5),
+# MinValueValidator(0)]), blank=True)
+# users = ArrayField(models.CharField(max_length=200, blank=True), blank=True)
 
 
 class UsersAlbumRating(models.Model):

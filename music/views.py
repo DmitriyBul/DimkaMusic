@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.core.paginator import Paginator
+from django.db.models import Avg
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 # Create your views here.
@@ -45,8 +46,9 @@ class AlbumDetailView(View):
     def get(self, request, ordering='AZ', *args, **kwargs):
         album = get_object_or_404(Album, id=self.kwargs['id'], slug=self.kwargs['slug'])
         songs = Song.objects.filter(album=album).order_by('number_in_album')
-        UsersAlbumRating.objects.get_or_create(user=request.user, album=album)
-        rating = list(UsersAlbumRating.objects.filter(user=request.user, album=album).values_list('rating', flat=True))[0]
+        UsersAlbumRating.objects.get_or_create(user=request.user, album=album, rating=0)
+        rating = list(UsersAlbumRating.objects.filter(user=request.user, album=album).values_list('rating', flat=True))[
+            0]
         template_name = 'music/album_detail.html'
         context = {'album': album, 'songs': songs, 'rating': rating}
         return render(request, template_name, context)
@@ -96,6 +98,16 @@ class ArtistDetailView(View):
 class AlbumsListView(ListView):
     def get(self, request, ordering='AZ', tag_slug=None, *args, **kwargs):
         albums = Album.objects.order_by('name')
+        # albums_rating = UsersAlbumRating.objects.all()
+        '''
+        stars_average = (UsersAlbumRating.objects
+                         .values('album__name')
+                         .annotate(avg=Avg('rating'))
+                         .order_by('album__name')
+                         )
+'''
+        #stars_average = albums_rating.aggregate(Avg('rating')).values()
+
         tag = None
         if tag_slug:
             tag = get_object_or_404(Tag, slug=tag_slug)
@@ -130,7 +142,6 @@ def rate_album(request, id, slug):
         el_id = request.POST.get('el_id')
         val = request.POST.get('val')
         album = get_object_or_404(Album, id=id)
-        UsersAlbumRating.objects.get_or_create(user=request.user, album=album)
         UsersAlbumRating.objects.filter(user=request.user, album=album).update(rating=val)
         return HttpResponseRedirect(request.path_info)
     return HttpResponseRedirect(request.path_info)

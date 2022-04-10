@@ -20,11 +20,13 @@
                         <span>{{ album.artist }}</span>
                         <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
                         <div class="star">
+                            {{ album.rating }}
                             <span class="fa fa-star" id="first_star"></span>
                             <span class="fa fa-star" id="second_star"></span>
                             <span class="fa fa-star" id="third_star"></span>
                             <span class="fa fa-star" id="fourth_star"></span>
                             <span class="fa fa-star" id="fifth_star"></span>
+                            <span>({{ album.rating_count }})</span>
                         </div>
                     <div id="confirm-box"></div>
                         <p class="tags">
