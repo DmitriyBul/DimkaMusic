@@ -10,24 +10,36 @@ New Albums
     <p>Lorem ipsum fgdjhgjdfhghudfhvu udfhug hdfuhgdf u fdhgu</p>
     <div class="album-box">
         {% for album in page_obj %}
-        <div class="albums">
-            <a href="{{ album.get_absolute_url }}">
-                <img src="{{ album.image.url }}"></a>
-            <div class="details">
-                <h6>{{ album.artist }}</h6>
-                <span>{{ album.year }}</span>
-                <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
-                <div class="star">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <span>(239)</span>
+                <div class="albums">
+                    <a href="{{ album.get_absolute_url }}">
+                        <img src="{{ album.image.url }}" height="50"></a>
+                    <div class="details">
+                        <span>{{ album.artist }}</span>
+                        <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
+                        <div class="star">
+                            {{ album.rating }}
+                            {% for i in '12345'|make_list %}
+                                {% if forloop.counter <=  album.rating %}
+                                    <span class="fa fa-star checked"></span>
+                                {% else %}
+                                    <span class="fa fa-star"></span>
+                                {% endif %}
+                            {% endfor %}
+                            <span>({{ album.rating_count }})</span>
+                        </div>
+                        <div id="confirm-box"></div>
+                        <p class="tags">
+                            Tags:
+                            {% for tag in album.tags.all %}
+                                <a href="{% url "music:albums_by_tag" tag.slug %}">
+                                    {{ tag.name }}
+                                </a>
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
                 </div>
-            </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
 
     </div>
 </section>

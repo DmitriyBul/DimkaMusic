@@ -24,7 +24,6 @@ class HomeView(ListView):
     def get(self, request, ordering='AZ', *args, **kwargs):
         albums = Album.objects.all()[:6]
         template_name = 'music/home.html'
-        # profile = get_object_or_404(Profile, user=request.user)
         form = UserRegistrationForm()
         context = {'albums': albums, 'form': form}
         return render(request, template_name, context)
@@ -98,16 +97,6 @@ class ArtistDetailView(View):
 class AlbumsListView(ListView):
     def get(self, request, ordering='AZ', tag_slug=None, *args, **kwargs):
         albums = Album.objects.order_by('name')
-        # albums_rating = UsersAlbumRating.objects.all()
-        '''
-        stars_average = (UsersAlbumRating.objects
-                         .values('album__name')
-                         .annotate(avg=Avg('rating'))
-                         .order_by('album__name')
-                         )
-'''
-        #stars_average = albums_rating.aggregate(Avg('rating')).values()
-
         tag = None
         if tag_slug:
             tag = get_object_or_404(Tag, slug=tag_slug)
