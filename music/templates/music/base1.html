@@ -179,9 +179,9 @@
     btn.onclick = function () {
         sidebar.classList.toggle("active");
     };
-    let previous = document.querySelector('#pre');
+
 let play = document.querySelector('#play');
-let next = document.querySelector('#next');
+
 let title = document.querySelector('#title');
 let recent_volume = document.querySelector('#volume');
 let volume_show = document.querySelector('#volume_show');
@@ -203,7 +203,6 @@ let autoplay = 0;
 let index_no = 0;
 let playing_song = false;
 
-let song_1 = document.getElementById("1");
 let track = document.createElement('audio');
 track.setAttribute("preload", "metadata");
 
@@ -213,38 +212,20 @@ track.setAttribute("preload", "metadata");
 let count = document.getElementsByClassName('song').length;
 let song_data = [];
 let name_data = [];
-let singer_name = '{{album.artist}}';
-
-{% for song in songs %}
-    song_data.push('{{song.file.url}}');
-    name_data.push('{{song.name}}');
-{% endfor %}
 
 
-let All_song = [];
-
-for (let i = 0; i < count; i++) {
-  All_song.push({
-      name: name_data[i],
-        path: song_data[i],
-        singer: singer_name
-  });
-  }
-
-function load_track(index_no) {
+function load_track() {
     clearInterval(timer);
     reset_slider();
-    track.src = All_song[index_no].path;
-    title.innerHTML = All_song[index_no].name;
-    artist.innerHTML = All_song[index_no].singer;
+    track.src = '{{ song.file.url }}';
+    title.innerHTML = '{{ song.name }}';
+    artist.innerHTML = '{{ album.artist }}';
     track_image.src = '{{album.image.url}}';
     track.load();
-    total.innerHTML = All_song.length;
-    present.innerHTML = index_no + 1;
     timer = setInterval(range_slider, 1000);
 }
 
-load_track(index_no);
+load_track();
 
 
 function mute_sound() {
@@ -276,29 +257,6 @@ function pausesong() {
     play.innerHTML = '<i class="fa fa-play"></i>';
 }
 
-function next_song() {
-    if (index_no < All_song.length - 1){
-        index_no += 1;
-        load_track(index_no);
-        playsong();
-    } else{
-        index_no = 0;
-        load_track(index_no);
-        playsong();
-    }
-}
-
-function previous_song() {
-    if (index_no > 0){
-        index_no -= 1;
-        load_track(index_no);
-        playsong();
-    } else{
-        index_no = All_song.length;
-        load_track(index_no);
-        playsong();
-    }
-}
 
 function volume_change() {
     volume_show.innerHTML = recent_volume.value;
@@ -340,141 +298,7 @@ function range_slider() {
 }
 
 
-const one = document.getElementById('first');
-const two = document.getElementById('second');
-const three = document.getElementById('third');
-const four = document.getElementById('fourth');
-const five = document.getElementById('fifth');
-const arr = [one, two, three, four, five];
 
-const form = document.querySelector('.rate-form');
-const confirmBox = document.getElementById('confirm-box');
-const csrf = document.getElementsByName('csrfmiddlewaretoken');
-
-
-function initStarValues() {
-    const children = form.children;
-    for (let i=0; i < children.length; i++) {
-        if(i <= '{{ rating }}') {
-            children[i].classList.add('checked');
-        } else {
-            children[i].classList.remove('checked');
-        }
-    }
-}
-initStarValues();
-const handleStarSelect = (size) => {
-    const children = form.children;
-    for (let i=0; i < children.length; i++) {
-        if(i <= size) {
-            children[i].classList.add('checked')
-        } else {
-            children[i].classList.remove('checked')
-        }
-    }
-};
-
-const handleSelect = (selection) => {
-
-    switch(selection){
-        case 'first': {
-            // one.classList.add('checked')
-            // two.classList.remove('checked')
-            // three.classList.remove('checked')
-            // four.classList.remove('checked')
-            // five.classList.remove('checked')
-            handleStarSelect(1);
-            return
-        }
-        case 'second': {
-            handleStarSelect(2);
-            return
-        }
-        case 'third': {
-            handleStarSelect(3);
-            return
-        }
-        case 'fourth': {
-            handleStarSelect(4);
-            return
-        }
-        case 'fifth': {
-            handleStarSelect(5);
-            return
-        }
-        default: {
-            handleStarSelect(0);
-        }
-    }
-
-};
-
-const getNumericValue = (stringValue) =>{
-    let numericValue;
-    if (stringValue === 'first') {
-        numericValue = 1;
-    }
-    else if (stringValue === 'second') {
-        numericValue = 2;
-    }
-    else if (stringValue === 'third') {
-        numericValue = 3;
-    }
-    else if (stringValue === 'fourth') {
-        numericValue = 4;
-    }
-    else if (stringValue === 'fifth') {
-        numericValue = 5;
-    }
-    else {
-        numericValue = 0;
-    }
-    return numericValue
-};
-
-if (one) {
-    const arr = [one, two, three, four, five];
-
-    arr.forEach(item=> item.addEventListener('mouseover', (event)=>{
-        handleSelect(event.target.id)
-    }));
-
-    arr.forEach(item=> item.addEventListener('click', (event)=>{
-        // value of the rating not numeric
-        const val = event.target.id;
-
-        let isSubmit = false;
-        form.addEventListener('submit', e=>{
-            e.preventDefault();
-            if (isSubmit) {
-                return
-            }
-            isSubmit = true;
-            // picture id
-            const id = e.target.id;
-            // value of the rating translated into numeric
-            const val_num = getNumericValue(val);
-
-            $.ajax({
-                type: 'POST',
-                url: 'rate_album/',
-                data: {
-                    'csrfmiddlewaretoken': csrf[0].value,
-                    'el_id': id,
-                    'val': val_num,
-                },
-                success: function(response){
-                    console.log(response);
-                    confirmBox.innerHTML = `Successfully rated with ${response.score}`;
-                },
-                error: function(error){
-                    console.log(error);
-                    confirmBox.innerHTML = 'Successfully rated';
-                }
-            })
-        })
-    }))
-}
 
 </script>
 </html>

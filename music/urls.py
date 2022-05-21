@@ -9,6 +9,7 @@ app_name = 'music'
 urlpatterns = [
     path('', lambda req: redirect('/home/')),
     path('home/', views.HomeView.as_view(), name='home'),
+    path('random/', views.RandomSong.as_view(), name='random_song'),
     path('artists/', views.ArtistsListView.as_view(), name='artists'),
     path('albums/', views.AlbumsListView.as_view(), name='albums'),
     path('<int:id>/<slug:slug>/', views.AlbumDetailView.as_view(), name='album_detail'),

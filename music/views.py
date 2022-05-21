@@ -1,4 +1,6 @@
+import random
 from itertools import chain
+from random import choice
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -45,9 +47,13 @@ class AlbumDetailView(View):
     def get(self, request, ordering='AZ', *args, **kwargs):
         album = get_object_or_404(Album, id=self.kwargs['id'], slug=self.kwargs['slug'])
         songs = Song.objects.filter(album=album).order_by('number_in_album')
-        UsersAlbumRating.objects.get_or_create(user=request.user, album=album, rating=0)
-        rating = list(UsersAlbumRating.objects.filter(user=request.user, album=album).values_list('rating', flat=True))[
-            0]
+        if request.user.is_authenticated:
+            UsersAlbumRating.objects.get_or_create(user=request.user, album=album, rating=0)
+            rating = \
+            list(UsersAlbumRating.objects.filter(user=request.user, album=album).values_list('rating', flat=True))[
+                0]
+        else:
+            rating = album.rating
         template_name = 'music/album_detail.html'
         context = {'album': album, 'songs': songs, 'rating': rating}
         return render(request, template_name, context)
@@ -134,3 +140,18 @@ def rate_album(request, id, slug):
         UsersAlbumRating.objects.filter(user=request.user, album=album).update(rating=val)
         return HttpResponseRedirect(request.path_info)
     return HttpResponseRedirect(request.path_info)
+
+
+class RandomSong(View):
+    def get(self, request, ordering='AZ', *args, **kwargs):
+        album_ids = Album.objects.values_list('id', flat=True)
+        random_album_id = choice(album_ids)
+        album = Album.objects.get(id=random_album_id)
+        # ids = Song.objects.filter(album=album).values_list('id', flat=True)
+        songs_ids = list(Song.objects.filter(album__name=album.name).values_list('id', flat=True))
+        ids = random.choice(songs_ids)
+        # random_id = choice(ids)
+        song = Song.objects.get(id=ids)
+        template_name = 'music/random_song.html'
+        context = {'album': album, 'song': song}
+        return render(request, template_name, context)
