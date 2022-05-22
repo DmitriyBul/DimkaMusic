@@ -47,7 +47,8 @@ class Album(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('music:album_detail', args=[self.id, self.slug])
+        nia = 1
+        return reverse('music:album_detail', args=[self.id, self.slug, nia])
 
     @property
     def rating(self):

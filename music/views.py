@@ -46,16 +46,20 @@ class HomeView(ListView):
 class AlbumDetailView(View):
     def get(self, request, ordering='AZ', *args, **kwargs):
         album = get_object_or_404(Album, id=self.kwargs['id'], slug=self.kwargs['slug'])
-        songs = Song.objects.filter(album=album).order_by('number_in_album')
+        number = self.kwargs['nia']
+        song = Song.objects.get(album=album, number_in_album=number)
+        number = self.kwargs['nia'] + 1
+        songs_count = Song.objects.filter(album__id=album.id).count()
+
         if request.user.is_authenticated:
             UsersAlbumRating.objects.get_or_create(user=request.user, album=album, rating=0)
             rating = \
-            list(UsersAlbumRating.objects.filter(user=request.user, album=album).values_list('rating', flat=True))[
-                0]
+                list(UsersAlbumRating.objects.filter(user=request.user, album=album).values_list('rating', flat=True))[
+                    0]
         else:
             rating = album.rating
         template_name = 'music/album_detail.html'
-        context = {'album': album, 'songs': songs, 'rating': rating}
+        context = {'album': album, 'song': song, 'rating': rating, 'songs_count': songs_count, 'number': number}
         return render(request, template_name, context)
 
 
@@ -155,3 +159,6 @@ class RandomSong(View):
         template_name = 'music/random_song.html'
         context = {'album': album, 'song': song}
         return render(request, template_name, context)
+
+
+

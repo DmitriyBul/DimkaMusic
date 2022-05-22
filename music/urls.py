@@ -12,7 +12,7 @@ urlpatterns = [
     path('random/', views.RandomSong.as_view(), name='random_song'),
     path('artists/', views.ArtistsListView.as_view(), name='artists'),
     path('albums/', views.AlbumsListView.as_view(), name='albums'),
-    path('<int:id>/<slug:slug>/', views.AlbumDetailView.as_view(), name='album_detail'),
+    path('<int:id>/<slug:slug>/<int:nia>/', views.AlbumDetailView.as_view(), name='album_detail'),
     path('<int:id>/<slug:slug>/rate_album/', views.rate_album, name='rate_album'),
 
     path('music/<int:id>/add/', views.add_album_to_library, name='add_album'),
