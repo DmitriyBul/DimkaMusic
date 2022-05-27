@@ -52,6 +52,13 @@
             <span class="tooltip">User</span>
         </li>
         <li>
+            <a href="{% url 'music:my_playlists' %}">
+                <i class="fas fa-bars"></i>
+                <span class="links_name">My Playlists</span>
+            </a>
+            <span class="tooltip">My Playlists</span>
+        </li>
+        <li>
             <a href="{% url 'accounts:dashboard' %}">
                 <i class='bx bx-heart'></i>
                 <span class="links_name">My Library</span>
@@ -197,8 +204,8 @@
     let total = document.querySelector('#total');
     let artist = document.querySelector('#artist');
 
-    let current_time = document.querySelector('#current_time');
-    let total_time = document.querySelector('#total_time');
+    let curr_time = document.querySelector(".current-time");
+    let total_duration = document.querySelector(".total-duration");
     var duration;
 
     let timer;
@@ -208,16 +215,17 @@
     let playing_song = false;
 
     let song_1 = document.getElementById("1");
-    let track = document.createElement('audio');
+    let track = document.getElementById("mysong");
     track.setAttribute("preload", "metadata");
     let tracks_count = '{{ songs_count }}';
-    let current_number = '{{ song.number_in_album }}'
+    let current_number = '{{ song.number_in_album }}';
     let count = document.getElementsByClassName('song').length;
     let song_data = [];
     let name_data = [];
     let singer_name = '{{album.artist}}';
     console.log(tracks_count);
     console.log(current_number);
+
     function load_track() {
         clearInterval(timer);
         reset_slider();
@@ -314,9 +322,9 @@
 
     function change_duration() {
         slider_position = track.duration * (slider.value / 100);
-        track.oncanplay = function () {
-            track.currentTime = slider_position;
-        };
+
+        track.currentTime = slider_position;
+        track.play();
     }
 
     function autoplay_switch() {
@@ -335,12 +343,34 @@
         if (!isNaN(track.duration)) {
             position = track.currentTime * (100 / track.duration);
             slider.value = position;
+            let currentMinutes = Math.floor(track.currentTime / 60);
+            let currentSeconds = Math.floor(track.currentTime - currentMinutes * 60);
+            let durationMinutes = Math.floor(track.duration / 60);
+            let durationSeconds = Math.floor(track.duration - durationMinutes * 60);
+
+            // Add a zero to the single digit time values
+            if (currentSeconds < 10) {
+                currentSeconds = "0" + currentSeconds;
+            }
+            if (durationSeconds < 10) {
+                durationSeconds = "0" + durationSeconds;
+            }
+            if (currentMinutes < 10) {
+                currentMinutes = "0" + currentMinutes;
+            }
+            if (durationMinutes < 10) {
+                durationMinutes = "0" + durationMinutes;
+            }
+
+            // Display the updated duration
+            curr_time.textContent = currentMinutes + ":" + currentSeconds;
+            total_duration.textContent = durationMinutes + ":" + durationSeconds;
         }
         if (track.ended && autoplay == 1) {
             track.pause();
             playing_song = false;
             play.innerHTML = '<i class="fa fa-play"></i>';
-            if (current_number != tracks_count){
+            if (current_number != tracks_count) {
                 window.location.href = "{% url 'music:album_detail' album.id album.slug number %}";
 
             }

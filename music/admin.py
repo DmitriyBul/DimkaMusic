@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .forms import AlbumForm
-from .models import Artist, Album, Song, UserLibrarylist, UsersAlbumRating
+from .models import Artist, Album, Song, UserLibrarylist, UsersAlbumRating, PlayList, UserPlaylist
 
 
 @admin.register(Artist)
@@ -64,9 +64,28 @@ class UserLibrarylistAdmin(admin.ModelAdmin):
     list_editable = ['album']
 
 
-
 @admin.register(UsersAlbumRating)
 class AlbumRatingByUserAdmin(admin.ModelAdmin):
     list_display = ['album', 'user', 'rating']
     list_filter = ['album', 'user', 'rating']
     list_editable = ['rating']
+
+
+class SongsInline(admin.TabularInline):
+    model = PlayList.songs.through
+
+
+@admin.register(PlayList)
+class PlayListAdmin(admin.ModelAdmin):
+    inlines = [
+        SongsInline,
+    ]
+    list_display = ['name']
+    list_filter = ['name']
+
+
+@admin.register(UserPlaylist)
+class UserPlaylistAdmin(admin.ModelAdmin):
+    list_display = ['user', 'playlist']
+    list_filter = ['user', 'playlist']
+    list_editable = ['playlist']

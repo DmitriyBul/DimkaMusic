@@ -10,6 +10,7 @@ from django.db.models import Avg
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 # Create your views here.
+from django.urls import reverse_lazy
 
 from django.views.generic import ListView, View
 import json
@@ -18,8 +19,8 @@ from taggit.models import Tag
 
 from accounts.forms import UserRegistrationForm
 from accounts.models import Profile
-from music.forms import SearchForm
-from .models import Album, Song, UserLibrarylist, Artist, UsersAlbumRating
+from music.forms import SearchForm, PlaylistForm
+from .models import Album, Song, UserLibrarylist, Artist, UsersAlbumRating, UserPlaylist, PlayList
 
 
 class HomeView(ListView):
@@ -119,6 +120,7 @@ class AlbumsListView(ListView):
         return render(request, template_name, context)
 
 
+
 class SearchResultsView(ListView):
     template_name = 'music/search.html'
     context_object_name = 'results'
@@ -136,7 +138,7 @@ class SearchResultsView(ListView):
         return queryset
 
 
-def rate_album(request, id, slug):
+def rate_album(request, id, slug, nia):
     if request.method == 'POST':
         el_id = request.POST.get('el_id')
         val = request.POST.get('val')
@@ -161,4 +163,43 @@ class RandomSong(View):
         return render(request, template_name, context)
 
 
+class PlaylistListView(ListView):
+    def get(self, request, ordering='AZ', *args, **kwargs):
+        playlist_ids = list(UserPlaylist.objects.filter(user=request.user).values_list('id', flat=True))
+        playlists = PlayList.objects.filter(id__in=playlist_ids)
+        lst = Paginator(playlists, 12)
+        page_number = request.GET.get('page')
+        page_obj = lst.get_page(page_number)
+        template_name = 'music/playlists.html'
+        context = {'page_obj': page_obj}
+        return render(request, template_name, context)
 
+
+class PlaylistDetailView(View):
+    def get(self, request, ordering='AZ', *args, **kwargs):
+        playlist = get_object_or_404(PlayList, id=self.kwargs['id'])
+
+        number = self.kwargs['nia']
+
+        songs = playlist.songs.all()
+        print(number)
+        song = songs[number]
+        print(song.name)
+        songs_count = playlist.songs.count()
+        template_name = 'music/playlist_detail.html'
+        context = {'playlist': playlist, 'song': song, 'songs_count': songs_count, 'number': number}
+        return render(request, template_name, context)
+
+@login_required
+def add_song_to_playlist(request, id, playlist_id):
+    song = get_object_or_404(Song, id=id)
+    playlist = get_object_or_404(PlayList, id=playlist_id)
+    playlist.songs.add(song)
+    return HttpResponseRedirect(request.path_info)
+
+
+class CreatePlaylist(View):
+    model = PlayList
+    form_class = PlaylistForm
+    template_name = 'music/playlist_create.html'
+    success_url = reverse_lazy('music:user_playlists')

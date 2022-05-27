@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% extends "music/base1.html" %}
+{% extends "music/base_for_playlists.html" %}
 {% load static %}
 <html lang="en" xmlns="">
 {% block title %}
@@ -37,14 +37,14 @@
             <p id="album_name">{{ album.name }}</p>
 
             <div class="middle">
-                {% if song.number_in_album > 1 %}
-                    <button onclick="location.href='{% url 'music:album_detail' album.id album.slug number|add:"-2" %}'"
+                {% if number > 1 %}
+                    <button onclick="location.href='{% url 'music:playlist_detail' playlist.id number|add:"-1" %}'"
                             id="next"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
                 {% endif %}
 
                 <button onclick="justplay()" id="play"><i class="fa fa-play" aria-hidden="true"></i></button>
-                {% if song.number_in_album < songs_count %}
-                    <button onclick="location.href='{% url 'music:album_detail' album.id album.slug number %}'"
+                {% if number < songs_count %}
+                    <button onclick="location.href='{% url 'music:playlist_detail' playlist.id number|add:"1" %}'"
                             id="next"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
                 {% endif %}
             </div>
@@ -72,9 +72,7 @@
                     </form>
                 </div>
                 <div id="confirm-box"></div>
-                <button class="add_to_f">
-                    <a href="{% url 'music:add_album' id=album.id %}" class="yellow">Add to Favourites</a>
-                </button>
+
             {% endif %}
         </div>
     </div>
