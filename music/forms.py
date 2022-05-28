@@ -1,4 +1,5 @@
 from django import forms
+from django.http import request
 
 from .models import Album, PlayList
 
@@ -32,3 +33,16 @@ class PlaylistForm(forms.ModelForm):
     class Meta:
         model = PlayList
         fields = 'name', 'image'
+
+'''
+class AddToPlaylistForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super(AddToPlaylistForm, self).__init__(*args, **kwargs)
+
+        users_playlists = forms.ModelChoiceField(
+            label='Add to ', queryset=PlayList.objects.filter(user=request.user), widget=forms.Select(
+                attrs={'class': 'form-control js-example-basic-single'}
+            )
+        )
+'''

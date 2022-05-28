@@ -27,23 +27,23 @@
         </div>
         <div class="right">
             <div class="show_song_no">
-                <p id="present">{{ song.number_in_album }}</p>
+                <p id="present">{{ number|add:"1"  }}</p>
                 <p>/</p>
                 <p id="total">{{ songs_count }}</p>
             </div>
 
             <p id="title">title.mp3</p>
-            <p id="artist">artist name</p>
-            <p id="album_name">{{ album.name }}</p>
+            <p id="artist">{{ song.album.artist }}</p>
+            <p id="album_name">{{ song.album.name }}</p>
 
             <div class="middle">
-                {% if number > 1 %}
+                {% if number|add:"1" > 1 %}
                     <button onclick="location.href='{% url 'music:playlist_detail' playlist.id number|add:"-1" %}'"
                             id="next"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
                 {% endif %}
 
                 <button onclick="justplay()" id="play"><i class="fa fa-play" aria-hidden="true"></i></button>
-                {% if number < songs_count %}
+                {% if number|add:"1" < songs_count %}
                     <button onclick="location.href='{% url 'music:playlist_detail' playlist.id number|add:"1" %}'"
                             id="next"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
                 {% endif %}
@@ -57,23 +57,7 @@
                 <div class="total-duration">00:00</div>
             </div>
 
-            {% if user.is_authenticated %}
-                <div class="star">
-                    <form class="rate-form" action="" method="POST" id="{{ album.id }}">
-                        {% csrf_token %}
 
-                        <button type="submit" class="fa fa-star" id="first"></button>
-                        <button type="submit" class="fa fa-star" id="second"></button>
-                        <button type="submit" class="fa fa-star" id="third"></button>
-                        <button type="submit" class="fa fa-star" id="fourth"></button>
-                        <button type="submit" class="fa fa-star" id="fifth"></button>
-
-
-                    </form>
-                </div>
-                <div id="confirm-box"></div>
-
-            {% endif %}
         </div>
     </div>
 {% endblock %}

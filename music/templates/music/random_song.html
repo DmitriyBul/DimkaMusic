@@ -1,46 +1,61 @@
 <!DOCTYPE html>
-{% extends "music/base1.html" %}
+{% extends "music/base_for_random.html" %}
 {% load static %}
 <html lang="en" xmlns="">
 {% block title %}
-{{ album.name }}
+    {{ album.name }}
 {% endblock %}
 </head>
 <body>
 {% block content %}
-<div class="main-player">
+    <div class="main-player">
+
+        <div class="song">
+            <audio id="mysong" preload="auto" src="{{ song.file.url|safe }}">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <p id="logo"><i class="fa fa-music" aria-hidden="true"></i>music</p>
+        <div class="left">
+            <img id="track_image">
+            <div class="volume">
+                <p id="volume_show">90</p>
+                <i class="fa fa-volume-up" aria-hidden="true" id="volume_icon" onclick="mute_sound()"></i>
+                <input type="range" min="0" max="100" value="90" onchange="volume_change()" id="volume">
+            </div>
+        </div>
+        <div class="right">
 
 
-    <p id="logo"><i class="fa fa-music" aria-hidden="true"></i>music</p>
-    <div class="left">
-        <img id="track_image">
-        <div class="volume">
-            <p id="volume_show">90</p>
-            <i class="fa fa-volume-up" aria-hidden="true" id="volume_icon" onclick="mute_sound()"></i>
-            <input type="range" min="0" max="100" value="90" onchange="volume_change()" id="volume">
+            <p id="title">title.mp3</p>
+            <p id="artist">artist name</p>
+            <p id="album_name">{{ album.name }}</p>
+
+            <div class="middle">
+
+                    <button onclick="location.href='{% url 'music:random_song' %}'"
+                            id="next"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
+
+
+                <button onclick="justplay()" id="play"><i class="fa fa-play" aria-hidden="true"></i></button>
+
+                    <button onclick="location.href='{% url 'music:random_song' %}'"
+                            id="next"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
+
+            </div>
+
+
+
+            <div class="duration">
+                <div class="current-time">00:00</div>
+                <input type="range" min="0" max="100" id="duration_slider" onchange="change_duration()">
+                <div class="total-duration">00:00</div>
+            </div>
+
+
         </div>
     </div>
-    <div class="right">
-
-
-        <p id="title"></p>
-        <p id="artist"></p>
-        <p id="album_name"></p>
-
-        <div class="middle">
-            <button onclick="location.href='{% url 'music:random_song' %}'" id="pre"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
-            <button onclick="justplay()" id="play"><i class="fa fa-play" aria-hidden="true"></i></button>
-            <button onclick="location.href='{% url 'music:random_song' %}'" id="next"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
-        </div>
-
-        <div class="duration">
-            <input type="range" min="0" max="100" value="0" id="duration_slider" onchange="change_duration()">
-        </div>
-        <button id="auto" onclick="autoplay_switch()">Auto play <i class="fa fa-circle-o-notch" aria-hidden="true"></i>
-        </button>
-
-    </div>
-</div>
 {% endblock %}
 </body>
 

@@ -50,7 +50,6 @@
             </div>
 
 
-
             <div class="duration">
                 <div class="current-time">00:00</div>
                 <input type="range" min="0" max="100" id="duration_slider" onchange="change_duration()">
@@ -72,6 +71,7 @@
                     </form>
                 </div>
                 <div id="confirm-box"></div>
+
                 <button class="add_to_f">
                     <a href="{% url 'music:add_album' id=album.id %}" class="yellow">Add to Favourites</a>
                 </button>

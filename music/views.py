@@ -51,16 +51,20 @@ class AlbumDetailView(View):
         song = Song.objects.get(album=album, number_in_album=number)
         number = self.kwargs['nia'] + 1
         songs_count = Song.objects.filter(album__id=album.id).count()
-
         if request.user.is_authenticated:
             UsersAlbumRating.objects.get_or_create(user=request.user, album=album, rating=0)
             rating = \
                 list(UsersAlbumRating.objects.filter(user=request.user, album=album).values_list('rating', flat=True))[
                     0]
+
+            user_playlist = PlayList.objects.filter(userplaylist__user=request.user)
+
         else:
             rating = album.rating
+            user_playlist = []
         template_name = 'music/album_detail.html'
-        context = {'album': album, 'song': song, 'rating': rating, 'songs_count': songs_count, 'number': number}
+        context = {'album': album, 'song': song, 'rating': rating, 'songs_count': songs_count, 'number': number,
+                   'user_playlists': user_playlist}
         return render(request, template_name, context)
 
 
@@ -120,7 +124,6 @@ class AlbumsListView(ListView):
         return render(request, template_name, context)
 
 
-
 class SearchResultsView(ListView):
     template_name = 'music/search.html'
     context_object_name = 'results'
@@ -178,10 +181,8 @@ class PlaylistListView(ListView):
 class PlaylistDetailView(View):
     def get(self, request, ordering='AZ', *args, **kwargs):
         playlist = get_object_or_404(PlayList, id=self.kwargs['id'])
-
         number = self.kwargs['nia']
-
-        songs = playlist.songs.all()
+        songs = playlist.songs.select_related('album').all()
         print(number)
         song = songs[number]
         print(song.name)
@@ -189,6 +190,7 @@ class PlaylistDetailView(View):
         template_name = 'music/playlist_detail.html'
         context = {'playlist': playlist, 'song': song, 'songs_count': songs_count, 'number': number}
         return render(request, template_name, context)
+
 
 @login_required
 def add_song_to_playlist(request, id, playlist_id):
