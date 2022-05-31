@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.core.paginator import Paginator
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 # Create your views here.
@@ -19,7 +19,7 @@ from taggit.models import Tag
 
 from accounts.forms import UserRegistrationForm
 from accounts.models import Profile
-from music.forms import SearchForm, PlaylistForm
+from music.forms import SearchForm, PlaylistForm, AddToPlaylistForm
 from .models import Album, Song, UserLibrarylist, Artist, UsersAlbumRating, UserPlaylist, PlayList
 
 
@@ -51,21 +51,27 @@ class AlbumDetailView(View):
         song = Song.objects.get(album=album, number_in_album=number)
         number = self.kwargs['nia'] + 1
         songs_count = Song.objects.filter(album__id=album.id).count()
+        playlist_form = AddToPlaylistForm()
         if request.user.is_authenticated:
             UsersAlbumRating.objects.get_or_create(user=request.user, album=album, rating=0)
             rating = \
                 list(UsersAlbumRating.objects.filter(user=request.user, album=album).values_list('rating', flat=True))[
                     0]
 
-            user_playlist = PlayList.objects.filter(userplaylist__user=request.user)
+            playlist_form.fields['users_playlists'].queryset = PlayList.objects.filter(userplaylist__user=request.user)
 
         else:
             rating = album.rating
-            user_playlist = []
+
         template_name = 'music/album_detail.html'
         context = {'album': album, 'song': song, 'rating': rating, 'songs_count': songs_count, 'number': number,
-                   'user_playlists': user_playlist}
+                   'playlist_form': playlist_form}
         return render(request, template_name, context)
+
+    def post(self, request, ordering='AZ', *args, **kwargs):
+        playlist_form = AddToPlaylistForm(request.POST)
+        if playlist_form.is_valid():
+            return redirect("/home/")
 
 
 @login_required
@@ -183,9 +189,7 @@ class PlaylistDetailView(View):
         playlist = get_object_or_404(PlayList, id=self.kwargs['id'])
         number = self.kwargs['nia']
         songs = playlist.songs.select_related('album').all()
-        print(number)
         song = songs[number]
-        print(song.name)
         songs_count = playlist.songs.count()
         template_name = 'music/playlist_detail.html'
         context = {'playlist': playlist, 'song': song, 'songs_count': songs_count, 'number': number}
@@ -193,11 +197,29 @@ class PlaylistDetailView(View):
 
 
 @login_required
-def add_song_to_playlist(request, id, playlist_id):
-    song = get_object_or_404(Song, id=id)
-    playlist = get_object_or_404(PlayList, id=playlist_id)
-    playlist.songs.add(song)
+def add_song_to_playlist(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        playlist_id = request.POST.get('p_id')
+        end_index = playlist_id.index('&')
+        print(playlist_id[16:end_index])
+        playlist_id = int(playlist_id[16:end_index])
+        song = get_object_or_404(Song, id=id)
+        playlist = get_object_or_404(PlayList, id=playlist_id)
+        playlist.songs.add(song)
+        return HttpResponseRedirect(request.path_info)
     return HttpResponseRedirect(request.path_info)
+
+
+@login_required
+def delete_song_from_playlist(request, id, p_id):
+    song = get_object_or_404(Song, id=id)
+    playlist = get_object_or_404(PlayList, id=p_id)
+    if playlist.songs.count() == 0:
+        return redirect('music:my_playlists')
+    else:
+        playlist.songs.remove(song)
+        return redirect('music:playlist_detail', id=p_id, nia=0)
 
 
 class CreatePlaylist(View):

@@ -12,12 +12,19 @@
         <div class="album-box">
             {% for playlist in page_obj %}
                 <div class="albums">
-                    <a href="{% url "music:playlist_detail" playlist.id 0 %}">
-                        <img src="{{ playlist.image.url }}" height="50"></a>
+                    {% if playlist.songs.count > 0 %}
+                        <a href="{% url "music:playlist_detail" playlist.id 0 %}">
+                            <img src="{{ playlist.image.url }}" height="50"></a>
+                    {% else %}
+                        <img src="{{ playlist.image.url }}" height="50">
+                    {% endif %}
                     <div class="details">
-                        <span>{{ album.artist }}</span>
+                        <span>Songs in playlist: {{ playlist.songs.count }}</span>
+                        {% if playlist.songs.count > 0 %}
                         <a href="{% url "music:playlist_detail" playlist.id 0 %}"><h6>{{ playlist.name }}</h6></a>
-
+                        {% else %}
+                        <h6>{{ playlist.name }}</h6>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}

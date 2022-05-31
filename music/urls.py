@@ -12,6 +12,9 @@ urlpatterns = [
     path('random/', views.RandomSong.as_view(), name='random_song'),
     path('artists/', views.ArtistsListView.as_view(), name='artists'),
     path('albums/', views.AlbumsListView.as_view(), name='albums'),
+    path('playlists/add/', views.add_song_to_playlist, name='add_to_playlist'),
+    path('playlists/delete/<int:id>/<int:p_id>/', views.delete_song_from_playlist, name='delete_from_playlist'),
+
     path('playlists/', views.PlaylistListView.as_view(), name='my_playlists'),
     path('playlists/<int:id>/<int:nia>/', views.PlaylistDetailView.as_view(), name='playlist_detail'),
     path('<int:id>/<slug:slug>/<int:nia>/', views.AlbumDetailView.as_view(), name='album_detail'),

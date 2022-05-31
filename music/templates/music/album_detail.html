@@ -71,6 +71,18 @@
                     </form>
                 </div>
                 <div id="confirm-box"></div>
+                <br>
+                <div class="playlist-form">
+                <br>
+                    <br>
+                    <form id="playlist-form" method="post">
+                        {{ playlist_form.as_p }}
+                        {% csrf_token %}
+                        <input type="submit" value="Add to playlist">
+
+
+                    </form>
+                </div>
 
                 <button class="add_to_f">
                     <a href="{% url 'music:add_album' id=album.id %}" class="yellow">Add to Favourites</a>

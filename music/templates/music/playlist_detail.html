@@ -27,7 +27,7 @@
         </div>
         <div class="right">
             <div class="show_song_no">
-                <p id="present">{{ number|add:"1"  }}</p>
+                <p id="present">{{ number|add:"1" }}</p>
                 <p>/</p>
                 <p id="total">{{ songs_count }}</p>
             </div>
@@ -50,13 +50,16 @@
             </div>
 
 
-
             <div class="duration">
                 <div class="current-time">00:00</div>
                 <input type="range" min="0" max="100" id="duration_slider" onchange="change_duration()">
                 <div class="total-duration">00:00</div>
             </div>
-
+            <button class="add_to_f">
+                <a href="{% url 'music:delete_from_playlist' id=song.id p_id=playlist.id %}" class="yellow">
+                    Delete song from playlist
+                </a>
+            </button>
 
         </div>
     </div>

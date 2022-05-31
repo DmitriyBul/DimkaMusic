@@ -242,7 +242,10 @@
     window.onload = function () {
         if (track.currentTime == 0 && !isPlaying && autoplay == 1) {
             setTimeout(2000);
-            justplay()
+            justplay();
+            track.play();
+            play.innerHTML = '<i class="fa fa-pause"></i>';
+
         }
 
 
@@ -516,6 +519,21 @@
             })
         }))
     }
+    let song_id = '{{ song.id }}';
+    $('#playlist-form').on('submit', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'music:add_to_playlist' %}",
+            data: {
+                'csrfmiddlewaretoken': csrf[0].value,
+                'id': song_id,
+                'p_id': $('#playlist-form').serialize(),
+            },
+
+        })
+    })
+
 
 </script>
 </html>
