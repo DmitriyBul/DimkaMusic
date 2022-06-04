@@ -130,6 +130,14 @@ class AlbumsListView(ListView):
         return render(request, template_name, context)
 
 
+class TagsListView(ListView):
+    def get(self, request, ordering='AZ', *args, **kwargs):
+        tags = Tag.objects.all()
+        template_name = 'music/tags_list.html'
+        context = {'tags': tags}
+        return render(request, template_name, context)
+
+
 class SearchResultsView(ListView):
     template_name = 'music/search.html'
     context_object_name = 'results'

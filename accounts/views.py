@@ -1,16 +1,14 @@
 from django.core.paginator import Paginator
 
 from music.models import Album, UserLibrarylist
-from .models import Profile
+
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.http import require_POST
+from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.views.generic.base import View
 
-from .forms import LoginForm, UserRegistrationForm, EmailLoginForm
+from .forms import UserRegistrationForm, EmailLoginForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 

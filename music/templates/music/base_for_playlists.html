@@ -73,7 +73,7 @@
             <span class="tooltip">News</span>
         </li>
         <li>
-            <a href="#">
+            <a href="{% url 'music:tags_list' %}">
                 <i class='bx bx-receipt'></i>
                 <span class="links_name">Genres</span>
             </a>
@@ -242,15 +242,19 @@
     window.onload = function () {
         if (track.currentTime == 0 && !isPlaying && autoplay == 1) {
             setTimeout(2000);
-            justplay()
+            justplay();
+            track.play();
+            play.innerHTML = '<i class="fa fa-pause"></i>';
+
         }
 
 
     };
-    if (track.ended) {
+     if (track.ended) {
         track.pause();
         playing_song = false;
         play.innerHTML = '<i class="fa fa-play"></i>';
+        window.location.href = "{% url 'music:playlist_detail' playlist.id number|add:"1" %}";
 
 
     }
@@ -369,7 +373,10 @@
             track.pause();
             playing_song = false;
             play.innerHTML = '<i class="fa fa-play"></i>';
+            if (current_number != tracks_count) {
+                window.location.href = "{% url 'music:playlist_detail' playlist.id number|add:"1" %}";
 
+            }
 
 
         }

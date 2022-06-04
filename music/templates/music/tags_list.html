@@ -1,0 +1,33 @@
+{% extends "music/base.html" %}
+{% load static %}
+{% load rating_tags %}
+{% block title %}
+    All tags
+{% endblock %}
+{% block content %}
+
+
+
+    <section id="album">
+        <h1>Genres:</h1>
+        <div class="album-box">
+            <p class="tags">
+
+                {% for tag in tags %}
+                    <div>
+                    <a href="{% url "music:albums_by_tag" tag.slug %}">
+                        {{ tag.name }}
+                    </a>
+                    </div>
+                    <br>
+                {% endfor %}
+        </p>
+
+        </div>
+    </section>
+
+
+    <br><br><br><br><br><br><br><br>
+
+
+{% endblock %}
