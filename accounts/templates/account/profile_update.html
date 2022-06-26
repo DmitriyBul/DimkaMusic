@@ -1,0 +1,23 @@
+{% extends "music/base.html" %}
+{% load static %}
+{% block title %}Email Log-in{% endblock %}
+{% block content %}
+    <section id="album">
+        <h1>Update profile</h1>
+    </section>
+    <section id="registration">
+
+        <p>Old image:</p>
+        {% if user_profile.photo %}
+            <img src="{{ user_profile.photo.url }}" alt="user" width="300">
+        {% else %}
+            <img src="{% static 'images/profile.png' %}" alt="user" width="250">
+        {% endif %}
+        <br>
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ profile_form.as_p }}
+            <input type="submit" value="Submit">
+        </form>
+    </section>
+{% endblock %}

@@ -1,7 +1,16 @@
-{% extends "products/base.html" %}
+{% extends "music/base.html" %}
 {% block title %}Welcome{% endblock %}
 {% block content %}
-    <h1>Добро пожаловать {{ new_user.first_name }}!</h1>
-    <p>Ваш аккаунт успешно создан.
-        Теперь вы можете <a href="{% url "account:login" %}">войти</a>.</p>
+    <h1>Welcome {{ new_user.first_name }}!</h1>
+    <p>Your account successfully created.
+        Now you can <a href="{% url "accounts:login" %}">login</a>.</p>
+<section id="album">
+        <h1>Creation of account</h1>
+    </section>
+    <section id="registration">
+        <div class="reminder">
+            <p>Listen Over 100 Albums</p>
+            <h1>Register to do playlists and listen it!</h1>
+        </div>
+    </section>
 {% endblock %}

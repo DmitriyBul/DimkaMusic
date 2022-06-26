@@ -32,11 +32,11 @@
                 <p id="total">{{ songs_count }}</p>
             </div>
 
-            <p id="title">title.mp3</p>
-            <p id="artist">artist name</p>
-            <p id="album_name">{{ album.name }}</p>
+            <p id="title" style="margin-top: 50px; font-size: 25px; align-items: center; transform: translateX(-50%); text-align: center; justify-content: center;">title.mp3</p>
+            <p id="artist" style="font-size: 18px; align-items: left; text-align: left; justify-content: left;">artist name</p>
+            <p id="album_name" style="font-size: 18px; align-items: center; text-align: center; justify-content: center">{{ album.name }}</p>
 
-            <div class="middle">
+            <div class="middle" style="margin-top: 30px;">
                 {% if song.number_in_album > 1 %}
                     <button onclick="location.href='{% url 'music:album_detail' album.id album.slug number|add:"-2" %}'"
                             id="next"><i class="fa fa-step-backward" aria-hidden="true"></i></button>

@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 
+from accounts.models import Profile
+
 
 class UserRegistrationForm(forms.ModelForm):
     username = forms.CharField(label=u'Username', help_text=False)
@@ -28,3 +30,10 @@ class EmailLoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
 
 
+class ProfileEditForm(forms.ModelForm):
+    photo = forms.ImageField(label='New image', required=False,
+                             error_messages={'invalid': "Image files only"}, widget=forms.FileInput)
+
+    class Meta:
+        model = Profile
+        fields = ('photo',)

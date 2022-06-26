@@ -32,9 +32,9 @@
                 <p id="total">{{ songs_count }}</p>
             </div>
 
-            <p id="title">title.mp3</p>
-            <p id="artist">{{ song.album.artist }}</p>
-            <p id="album_name">{{ song.album.name }}</p>
+           <p id="title" style="margin-top: 50px; transform: translateX(-50%); font-size: 25px; align-items: center; text-align: center; justify-content: center;">title.mp3</p>
+            <p id="artist" style="font-size: 18px; align-items: left; text-align: left; justify-content: left;">artist name</p>
+            <p id="album_name" style="font-size: 18px; align-items: center; text-align: center; justify-content: center">{{ song.album }}</p>
 
             <div class="middle">
                 {% if number|add:"1" > 1 %}

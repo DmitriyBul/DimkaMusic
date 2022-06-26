@@ -1,12 +1,19 @@
 from django.conf import settings
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.shortcuts import redirect
 from django.conf.urls.static import static
 from django.urls import path
+from django.views.generic import RedirectView
+
 from . import views
 
 app_name = 'music'
 urlpatterns = [
+    path(
+        "favicon.ico",
+        RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
+    ),
     path('', lambda req: redirect('/home/')),
     path('home/', views.HomeView.as_view(), name='home'),
     path('random/', views.RandomSong.as_view(), name='random_song'),

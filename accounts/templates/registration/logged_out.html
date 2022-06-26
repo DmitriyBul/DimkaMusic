@@ -1,8 +1,19 @@
 {% extends "music/base.html" %}
 {% block title %}Logged out{% endblock %}
 {% block content %}
-    <h1>Вы успешно вышли.</h1>
-    <p>
-        Вы можете <a href="{% url "accounts:login" %}">войти</a> снова.
-    </p>
+
+
+    <section id="album">
+        <h1>You successfully logged out.</h1>
+        <p>
+            You can <a href="{% url "accounts:login" %}">login</a> again.
+        </p>
+    </section>
+    <section id="registration">
+        <div class="reminder">
+
+        </div>
+    </section>
+
+
 {% endblock %}

@@ -1,11 +1,20 @@
 {% extends "music/base.html" %}
+{% load static %}
 {% block title %}Profile page{% endblock %}
 {% block content %}
 <section id="album">
 <div class="profile_page">
 <div class="wrapper">
     <div class="profile_left">
+        {% if user_profile.photo %}
         <img src="{{ user_profile.photo.url }}" alt="user" width="100">
+        {% else %}
+                    <img src="{% static 'images/profile.png' %}" alt="user" width="150">
+        {%  endif %}
+    <br>
+    <a href="{% url 'accounts:profile_edit' %}">
+                Edit profile
+            </a>
         <h4>{{user.username}}</h4>
         <p>UI Developer</p>
     </div>

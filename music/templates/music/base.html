@@ -6,10 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DimkaMusic main page</title>
-    <link href=" {% static 'css/style.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
           integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+    <link href=" {% static 'css/style.css' %}" rel="stylesheet" type="text/css"/>
+
 </head>
 <body>
 <div class="sidebar">
@@ -44,6 +46,7 @@
             </a>
             <span class="tooltip">Music Library</span>
         </li>
+    {% if user.is_authenticated %}
         <li>
             <a href="{% url 'accounts:profile' %}">
                 <i class='bx bx-user'></i>
@@ -51,14 +54,17 @@
             </a>
             <span class="tooltip">User</span>
         </li>
-        <li>
-            <a href="{% url 'music:my_playlists' %}">
-                <i class="fas fa-bars"></i>
-                <span class="links_name">My Playlists</span>
-            </a>
-            <span class="tooltip">My Playlists</span>
-        </li>
-
+    {% endif %}
+        {% if user.is_authenticated %}
+            <li>
+                <a href="{% url 'music:my_playlists' %}">
+                    <i class="fas fa-bars"></i>
+                    <span class="links_name">My Playlists</span>
+                </a>
+                <span class="tooltip">My Playlists</span>
+            </li>
+        {% endif %}
+    {% if user.is_authenticated %}
         <li>
             <a href="{% url 'accounts:dashboard' %}">
                 <i class='bx bx-heart'></i>
@@ -66,6 +72,7 @@
             </a>
             <span class="tooltip">Favourite</span>
         </li>
+    {% endif %}
         <li>
             <a href="{% url 'music:new_albums' %}">
                 <i class='bx bx-star'></i>
@@ -106,7 +113,11 @@
         <div class="profile">
             <div class="profile_details">
                 {% if user.is_authenticated %}
-                    <img src="{{ user_profile.photo.url }}">
+                    {% if user_profile.photo %}
+                        <img src="{{ user_profile.photo.url }}">
+                    {% else %}
+                        <img src="{% static 'images/profile.png' %}">
+                    {% endif %}
                     <div class="name_job">
                         <div class="name">{{ user.username }}</div>
                     </div>
@@ -120,7 +131,11 @@
 
                 {% endif %}
             </div>
-            <a href="{% url 'accounts:logout' %}"><i class='bx bx-log-out' id="log_out"></i></a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'accounts:logout' %}"><i class='bx bx-log-out' id="log_out"></i></a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}"><i class='bx bx-log-in' id="log_out"></i></a>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -239,22 +254,21 @@
     load_track(index_no);
     let isPlaying = track.currentTime > 0 && !track.paused && !track.ended && track.readyState > track.HAVE_CURRENT_DATA;
     window.onload = function () {
-        if (track.currentTime == 0 && !isPlaying && autoplay == 1){
-        setTimeout(2000);
-        justplay()
-    }
+        if (track.currentTime == 0 && !isPlaying && autoplay == 1) {
+            setTimeout(2000);
+            justplay()
+        }
 
 
     };
     if (track.ended) {
-            track.pause();
+        track.pause();
         playing_song = false;
         play.innerHTML = '<i class="fa fa-play"></i>';
 
 
-
-        }
-    if (track.currentTime == 0 && !isPlaying){
+    }
+    if (track.currentTime == 0 && !isPlaying) {
         setTimeout(2000);
         justplay()
     }
@@ -345,8 +359,8 @@
         }
         if (track.ended && autoplay == 1) {
             track.pause();
-        playing_song = false;
-        play.innerHTML = '<i class="fa fa-play"></i>';
+            playing_song = false;
+            play.innerHTML = '<i class="fa fa-play"></i>';
 
 
         }

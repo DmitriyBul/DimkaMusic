@@ -8,15 +8,20 @@
 
 
 
-    <section id="album">
-        <div class="album-box">
+    <section id="album" >
+        <div class="album-box" >
             {% for playlist in page_obj %}
-                <div class="albums">
+                <div class="albums" style="display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-gap: 1rem;
+
+    position: relative;
+    z-index: 0;">
                     {% if playlist.songs.count > 0 %}
                         <a href="{% url "music:playlist_detail" playlist.id 0 %}">
-                            <img src="{{ playlist.image.url }}" height="50"></a>
+                            <img src="{{ playlist.image.url }}" style="height: 100%"></a>
                     {% else %}
-                        <img src="{{ playlist.image.url }}" height="50">
+                        <img src="{{ playlist.image.url }}" style="height: 100%" >
                     {% endif %}
                     <div class="details">
                         <span>Songs in playlist: {{ playlist.songs.count }}</span>

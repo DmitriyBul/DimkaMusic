@@ -6,10 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DimkaMusic main page</title>
-    <link href=" {% static 'css/style.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
           integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+    <link href=" {% static 'css/style.css' %}" rel="stylesheet" type="text/css"/>
+
 </head>
 <body>
 <div class="sidebar">
@@ -51,6 +53,7 @@
             </a>
             <span class="tooltip">User</span>
         </li>
+        {% if user.is_authenticated %}
         <li>
             <a href="{% url 'music:my_playlists' %}">
                 <i class="fas fa-bars"></i>
@@ -58,6 +61,7 @@
             </a>
             <span class="tooltip">My Playlists</span>
         </li>
+        {% endif %}
         <li>
             <a href="{% url 'accounts:dashboard' %}">
                 <i class='bx bx-heart'></i>

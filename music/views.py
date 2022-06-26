@@ -3,6 +3,7 @@ from itertools import chain
 from random import choice
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.core.paginator import Paginator
@@ -78,7 +79,7 @@ class AlbumDetailView(View):
 def add_album_to_library(request, id):
     album = get_object_or_404(Album, id=id)
     UserLibrarylist.objects.get_or_create(user=request.user, album=album)
-    return redirect("/home/")
+    return redirect('accounts:dashboard')
 
 
 class NewAlbumsListView(ListView):
@@ -230,7 +231,7 @@ def delete_song_from_playlist(request, id, p_id):
         return redirect('music:playlist_detail', id=p_id, nia=0)
 
 
-class CreatePlaylist(View):
+class CreatePlaylist(View, LoginRequiredMixin):
     model = PlayList
     form_class = PlaylistForm
     template_name = 'music/playlist_create.html'

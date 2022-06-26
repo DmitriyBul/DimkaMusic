@@ -1,14 +1,16 @@
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
+from accounts.models import Profile
 from music.models import Album, UserLibrarylist
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 from django.views.generic.base import View
 
-from .forms import UserRegistrationForm, EmailLoginForm
+from .forms import UserRegistrationForm, EmailLoginForm, ProfileEditForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
@@ -22,6 +24,7 @@ def register(request):
             # Задаем пользователю зашифрованный пароль.
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
+            Profile.objects.create(user=new_user)
             return render(request,
                           'registration/register_done.html',
                           {'new_user': new_user})
@@ -83,3 +86,44 @@ class UserPageView(View, LoginRequiredMixin):
         template_name = 'account/profile_card.html'
         context = {'user': user}
         return render(request, template_name, context)
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        profile_form = ProfileEditForm(instance=request.user.profile,
+                                       data=request.POST,
+                                       files=request.FILES)
+        if profile_form.is_valid():
+            profile_form.save()
+
+    else:
+        profile_form = ProfileEditForm(instance=request.user.profile)
+    return render(request, 'account/profile_update.html',
+                          {'profile_form': profile_form})
+'''
+class ProfileEditView(UpdateView, LoginRequiredMixin):
+    def get(self, request, ordering='AZ', *args, **kwargs):
+        profile = Profile.objects.get(user=request.user)
+        profile_form = ProfileEditForm(instance=profile)
+        template_name = 'account/profile_update.html'
+        context = {'form': profile_form}
+        return render(request, template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        profile_form = ProfileEditForm(instance=request.user.profile,
+                                       data=request.POST,
+                                       files=request.FILES)
+        if profile_form.is_valid():
+
+            photo = profile_form.cleaned_data['photo']
+            profile = Profile.objects.get(user=request.user)
+            profile.photo = photo
+
+            if 'photo' in request.FILES:
+                profile.photo = request.FILES['photo']
+
+            profile.save()
+            Profile.objects.filter(user=request.user).update(photo=photo)
+        return redirect('accounts:profile')
+'''

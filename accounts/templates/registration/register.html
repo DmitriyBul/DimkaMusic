@@ -1,11 +1,27 @@
 {% extends "music/base.html" %}
 {% block title %}Create an account{% endblock %}
 {% block content %}
-    <h1>Создание аккаунта</h1>
-    <p>Пожалуйста, заполните следующую форму:</p>
-    <form action="." method="post">
-        {{ user_form.as_p }}
-        {% csrf_token %}
-        <p><input type="submit" value="Создать аккаунт"></p>
-    </form>
+    <section id="album">
+        <h1>Creation of account</h1>
+    </section>
+    <section id="registration">
+        <div class="reminder">
+            <p>Listen Over 100 Albums</p>
+            <h1>Register to do playlists and listen it!</h1>
+        </div>
+
+        <div class="form">
+            <form action="." method="post">
+                {{ user_form.as_p }}
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}"/>
+                <div class="btn">
+                    <p><input class="yellow" type="submit" value="Register account"></p>
+                </div>
+            </form>
+
+        </div>
+    </section>
+
+
 {% endblock %}
