@@ -1,9 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Count
 
 from accounts.models import Profile
-from music.models import Album, UserLibrarylist
-
+from music.models import Album, UserLibrarylist, Song
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
@@ -83,8 +83,11 @@ class UserLibraryView(ListView, LoginRequiredMixin):
 class UserPageView(View, LoginRequiredMixin):
     def get(self, request, ordering='AZ', *args, **kwargs):
         user = request.user
+        total_albums = UserLibrarylist.objects.filter(user=request.user).count()
+        album_ids = list(UserLibrarylist.objects.filter(user=request.user).values_list('album__id', flat=True))
+        total_songs = Song.objects.filter(album__id__in=album_ids).count()
         template_name = 'account/profile_card.html'
-        context = {'user': user}
+        context = {'user': user, 'total_albums': total_albums, 'total_songs': total_songs}
         return render(request, template_name, context)
 
 

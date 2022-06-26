@@ -7,16 +7,16 @@
 <div class="wrapper">
     <div class="profile_left">
         {% if user_profile.photo %}
-        <img src="{{ user_profile.photo.url }}" alt="user" width="100">
+        <img src="{{ user_profile.photo.url }}" alt="user" width="150" height="auto">
         {% else %}
                     <img src="{% static 'images/profile.png' %}" alt="user" width="150">
         {%  endif %}
     <br>
-    <a href="{% url 'accounts:profile_edit' %}">
-                Edit profile
+        <h4 style="font-size: 25px">{{user.username}}</h4>
+<br>
+    <a href="{% url 'accounts:profile_edit' %}" style="color: #FDC93B">
+                Edit photo
             </a>
-        <h4>{{user.username}}</h4>
-        <p>UI Developer</p>
     </div>
     <div class="profile_right">
 
@@ -28,8 +28,8 @@
                     <p>{{user.email}}</p>
                 </div>
                 <div class="profile_data">
-                    <h4>Phone</h4>
-                    <p>0001-213-999876</p>
+                    <h4>Date joined</h4>
+                    <p>{{user.date_joined}}</p>
                 </div>
             </div>
         </div>
@@ -38,12 +38,12 @@
             <h3>Projects</h3>
             <div class="projects_data">
                 <div class="profile_data">
-                    <h4>Recent</h4>
-                    <p>Lorem ipsum dolor sit amet.</p>
+                    <h4>Total Albums in Favourites</h4>
+                    <p>{{ total_albums }}</p>
                 </div>
                 <div class="profile_data">
-                    <h4>Most viewed</h4>
-                    <p>dolor sit amet.</p>
+                    <h4>Total Songs</h4>
+                    <p>{{ total_songs }}</p>
                 </div>
             </div>
         </div>

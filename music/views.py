@@ -53,6 +53,7 @@ class AlbumDetailView(View):
         number = self.kwargs['nia'] + 1
         songs_count = Song.objects.filter(album__id=album.id).count()
         playlist_form = AddToPlaylistForm()
+        in_favourites = False
         if request.user.is_authenticated:
             UsersAlbumRating.objects.get_or_create(user=request.user, album=album, rating=0)
             rating = \
@@ -60,13 +61,17 @@ class AlbumDetailView(View):
                     0]
 
             playlist_form.fields['users_playlists'].queryset = PlayList.objects.filter(userplaylist__user=request.user)
-
+            try:
+                UserLibrarylist.objects.get(user=request.user, album=album)
+                in_favourites = True
+            except:
+                in_favourites = False
         else:
             rating = album.rating
 
         template_name = 'music/album_detail.html'
         context = {'album': album, 'song': song, 'rating': rating, 'songs_count': songs_count, 'number': number,
-                   'playlist_form': playlist_form}
+                   'playlist_form': playlist_form, 'in_favourites': in_favourites}
         return render(request, template_name, context)
 
     def post(self, request, ordering='AZ', *args, **kwargs):
@@ -236,3 +241,11 @@ class CreatePlaylist(View, LoginRequiredMixin):
     form_class = PlaylistForm
     template_name = 'music/playlist_create.html'
     success_url = reverse_lazy('music:user_playlists')
+
+
+@login_required
+def delete_album_from_library(request, id):
+    album = get_object_or_404(Album, id=id)
+    record = UserLibrarylist.objects.get(user=request.user, album=album)
+    record.delete()
+    return redirect('accounts:dashboard')

@@ -29,6 +29,8 @@ urlpatterns = [
     path('<int:id>/<slug:slug>/<int:nia>/rate_album/', views.rate_album, name='rate_album'),
 
     path('music/<int:id>/add/', views.add_album_to_library, name='add_album'),
+    path('music/<int:id>/remove/', views.delete_album_from_library, name='delete_album'),
+
     path('artists/<int:id>/<slug:slug>/', views.ArtistDetailView.as_view(), name='artist_detail'),
     path('new_albums/', views.NewAlbumsListView.as_view(), name='new_albums'),
     path('search/', views.SearchResultsView.as_view(), name='search'),

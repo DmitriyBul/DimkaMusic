@@ -32,9 +32,13 @@
                 <p id="total">{{ songs_count }}</p>
             </div>
 
-            <p id="title" style="margin-top: 50px; font-size: 25px; align-items: center; transform: translateX(-50%); text-align: center; justify-content: center;">title.mp3</p>
-            <p id="artist" style="font-size: 18px; align-items: left; text-align: left; justify-content: left;">artist name</p>
-            <p id="album_name" style="font-size: 18px; align-items: center; text-align: center; justify-content: center">{{ album.name }}</p>
+            <p id="title"
+               style="margin-top: 50px; font-size: 25px; align-items: center; transform: translateX(-50%); text-align: center; justify-content: center;">
+                title.mp3</p>
+            <p id="artist" style="font-size: 18px; align-items: left; text-align: left; justify-content: left;">artist
+                name</p>
+            <p id="album_name"
+               style="font-size: 18px; align-items: center; text-align: center; justify-content: center">{{ album.name }}</p>
 
             <div class="middle" style="margin-top: 30px;">
                 {% if song.number_in_album > 1 %}
@@ -73,7 +77,7 @@
                 <div id="confirm-box"></div>
                 <br>
                 <div class="playlist-form">
-                <br>
+                    <br>
                     <br>
                     <form id="playlist-form" method="post">
                         {{ playlist_form.as_p }}
@@ -83,10 +87,15 @@
 
                     </form>
                 </div>
-
-                <button class="add_to_f">
-                    <a href="{% url 'music:add_album' id=album.id %}" class="yellow">Add to Favourites</a>
-                </button>
+                {% if not in_favourites %}
+                    <button class="add_to_f">
+                        <a href="{% url 'music:add_album' id=album.id %}" class="yellow">Add to Favourites</a>
+                    </button>
+                {% else %}
+                    <button class="add_to_f">
+                        <a href="{% url 'music:delete_album' id=album.id %}" class="yellow">Remove from Favourites</a>
+                    </button>
+                {% endif %}
             {% endif %}
         </div>
     </div>

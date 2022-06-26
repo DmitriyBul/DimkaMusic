@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Avg, Count, Q
+from django.utils.text import slugify
 from taggit.managers import TaggableManager
 # Create your models here.
 from django.urls import reverse
@@ -30,7 +31,7 @@ class Artist(models.Model):
 
 class Album(models.Model):
     name = models.CharField(max_length=200, db_index=True)
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
     year = models.IntegerField(blank=True)
     image = models.ImageField(upload_to='albums/', blank=True)
     artist = models.ForeignKey(Artist,
@@ -45,6 +46,10 @@ class Album(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Album, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         nia = 1
