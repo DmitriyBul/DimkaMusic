@@ -53,6 +53,7 @@ class AlbumDetailView(View):
         number = self.kwargs['nia'] + 1
         songs_count = Song.objects.filter(album__id=album.id).count()
         playlist_form = AddToPlaylistForm()
+
         in_favourites = False
         if request.user.is_authenticated:
             UsersAlbumRating.objects.get_or_create(user=request.user, album=album, rating=0)
@@ -68,10 +69,14 @@ class AlbumDetailView(View):
                 in_favourites = False
         else:
             rating = album.rating
+        album_tags = list(album.tags.all())
 
+        random_albums = random.sample(album_tags, len(album_tags))
+
+        recommended_albums = Album.objects.filter(tags__in=random_albums).exclude(name=album.name)
         template_name = 'music/album_detail.html'
         context = {'album': album, 'song': song, 'rating': rating, 'songs_count': songs_count, 'number': number,
-                   'playlist_form': playlist_form, 'in_favourites': in_favourites}
+                   'playlist_form': playlist_form, 'in_favourites': in_favourites, 'recommended_albums': recommended_albums}
         return render(request, template_name, context)
 
     def post(self, request, ordering='AZ', *args, **kwargs):
