@@ -2,6 +2,8 @@ import random
 from itertools import chain
 from random import choice
 
+import redis
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -22,6 +24,10 @@ from accounts.forms import UserRegistrationForm
 from accounts.models import Profile
 from music.forms import SearchForm, PlaylistForm, AddToPlaylistForm
 from .models import Album, Song, UserLibrarylist, Artist, UsersAlbumRating, UserPlaylist, PlayList
+
+r = redis.Redis(host=settings.REDIS_HOST,
+                port=settings.REDIS_PORT,
+                db=settings.REDIS_DB)
 
 
 class HomeView(ListView):
@@ -53,7 +59,8 @@ class AlbumDetailView(View):
         number = self.kwargs['nia'] + 1
         songs_count = Song.objects.filter(album__id=album.id).count()
         playlist_form = AddToPlaylistForm()
-
+        total_views = r.incr('album:{}:views'.format(album.id))
+        r.zincrby('album_ranking', album.id, 1)
         in_favourites = False
         if request.user.is_authenticated:
             UsersAlbumRating.objects.get_or_create(user=request.user, album=album, rating=0)
@@ -76,7 +83,8 @@ class AlbumDetailView(View):
         recommended_albums = Album.objects.filter(tags__in=random_albums).exclude(name=album.name)
         template_name = 'music/album_detail.html'
         context = {'album': album, 'song': song, 'rating': rating, 'songs_count': songs_count, 'number': number,
-                   'playlist_form': playlist_form, 'in_favourites': in_favourites, 'recommended_albums': recommended_albums}
+                   'playlist_form': playlist_form, 'in_favourites': in_favourites,
+                   'recommended_albums': recommended_albums, 'total_views': total_views}
         return render(request, template_name, context)
 
     def post(self, request, ordering='AZ', *args, **kwargs):
@@ -254,3 +262,19 @@ def delete_album_from_library(request, id):
     record = UserLibrarylist.objects.get(user=request.user, album=album)
     record.delete()
     return redirect('accounts:dashboard')
+
+
+class PopularAlbumsListView(ListView):
+    def get(self, request, ordering='AZ', *args, **kwargs):
+        # albums = Album.objects.order_by('-created')
+        album_ranking = r.zrange('album_ranking', 0, -1, desc=True)[:10]
+        album_ranking_ids = [int(id) for id in album_ranking]
+        most_viewed = list(Album.objects.filter(id__in=album_ranking_ids))
+        most_viewed.sort(key=lambda x: album_ranking_ids.index(x.id))
+        print(most_viewed)
+        lst = Paginator(most_viewed, 12)
+        page_number = request.GET.get('page')
+        page_obj = lst.get_page(page_number)
+        template_name = 'music/popular_albums.html'
+        context = {'page_obj': page_obj}
+        return render(request, template_name, context)

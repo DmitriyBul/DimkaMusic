@@ -33,6 +33,8 @@ urlpatterns = [
 
     path('artists/<int:id>/<slug:slug>/', views.ArtistDetailView.as_view(), name='artist_detail'),
     path('new_albums/', views.NewAlbumsListView.as_view(), name='new_albums'),
+    path('popular_albums/', views.PopularAlbumsListView.as_view(), name='popular_albums'),
+
     path('search/', views.SearchResultsView.as_view(), name='search'),
     path('tag/<slug:tag_slug>/', views.AlbumsListView.as_view(), name='albums_by_tag'),
     path('genres/', views.TagsListView.as_view(), name='tags_list'),

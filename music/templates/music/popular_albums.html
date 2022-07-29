@@ -1,0 +1,78 @@
+{% extends "music/base.html" %}
+{% load static %}
+{% block title %}
+New Albums
+{% endblock %}
+{% block content %}
+
+<section id="album">
+    <h1>Albums</h1>
+    <p>Popular albums on site</p>
+    <div class="album-box" style="display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-gap: 1rem;
+    margin-top: 50px;
+    position: relative;
+    z-index: 0;">
+        {% for album in page_obj %}
+                <div class="albums">
+                    <a href="{{ album.get_absolute_url }}">
+                        <img src="{{ album.image.url }}" height="50"></a>
+                    <div class="details">
+                        <span>{{ album.artist }}</span>
+                        <a href="{{ album.get_absolute_url }}"><h6>{{ album.name }}</h6></a>
+                        <div class="star">
+                            {{ album.rating }}
+                            {% for i in '12345'|make_list %}
+                                {% if forloop.counter <=  album.rating %}
+                                    <span class="fa fa-star checked"></span>
+                                {% else %}
+                                    <span class="fa fa-star"></span>
+                                {% endif %}
+                            {% endfor %}
+                            <span>({{ album.rating_count }})</span>
+                        </div>
+                        <div id="confirm-box"></div>
+                        <p class="tags">
+                            Tags:
+                            {% for tag in album.tags.all %}
+                                <a href="{% url "music:albums_by_tag" tag.slug %}">
+                                    {{ tag.name }}
+                                </a>
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+
+    </div>
+</section>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a class="pagination-action" href="?page=1">
+        <i class="fa fa-angle-double-left" aria-hidden="true"></i> </a>
+    <a class="pagination-action" href="?page={{ page_obj.previous_page_number }}">
+        <i class="fa fa-angle-left" aria-hidden="true"></i>
+    </a>
+    {% endif %}
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="pagination-number pagination-current">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a class="pagination-number" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+        <a class="pagination-action" href="?page={{ page_obj.next_page_number }}">
+            <i class="fa fa-angle-right" aria-hidden="true"></i>
+        </a>
+        <a class="pagination-action" href="?page={{ page_obj.paginator.num_pages }}">
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        </a>
+    {% endif %}
+</div>
+<br>
+
+{% endblock %}

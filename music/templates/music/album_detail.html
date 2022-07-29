@@ -60,7 +60,7 @@
                 <input type="range" min="0" max="100" id="duration_slider" onchange="change_duration()">
                 <div class="total-duration">00:00</div>
             </div>
-
+            {{ total_views }}
             {% if user.is_authenticated %}
                 <div class="star">
                     <form class="rate-form" action="" method="POST" id="{{ album.id }}">
