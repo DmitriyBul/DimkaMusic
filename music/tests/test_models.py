@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from music.models import Artist, Album, UsersAlbumRating
+from music.models import Artist, Album, UsersAlbumRating, UserLibrarylist
 
 
 class AlbumModelTest(TestCase):
@@ -31,14 +31,14 @@ class AlbumRatingModelTest(TestCase):
         self.album_1 = Album.objects.create(name='test_album_1', artist=self.artist_1, year=2000)
         self.user = User.objects.create(username='test_username')
         self.user_2 = User.objects.create(username='test_username_2')
-        self.relation = UsersAlbumRating.objects.create(album=self.album_1, user=self.user_2, rating=1)
 
-    def test_album_add_rating(self):
-        # self.assertEqual(4, self.album_1.rating)
-        UsersAlbumRating.objects.create(album=self.album_1, user=self.user, rating=5)
-        self.assertEqual(1, self.album_1.rating)
-
-    def test_album_add_rating_wrong(self):
-        UsersAlbumRating.objects.create(album=self.album_1, user=self.user, rating=5)
-        album = Album.objects.get(name='test_album_1')
-        self.assertEqual(5, album.rating)
+    def test_user_library(self):
+        relation = UserLibrarylist.objects.create(album=self.album_1, user=self.user)
+        count = UserLibrarylist.objects.count()
+        self.assertEqual(1, count)
+        UserLibrarylist.objects.create(album=self.album_1, user=self.user_2)
+        count = UserLibrarylist.objects.count()
+        self.assertEqual(2, count)
+        relation.delete()
+        count = UserLibrarylist.objects.count()
+        self.assertEqual(1, count)

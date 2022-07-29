@@ -1,4 +1,5 @@
 import random
+from decimal import Decimal
 from itertools import chain
 from random import choice
 
@@ -63,7 +64,7 @@ class AlbumDetailView(View):
         r.zincrby('album_ranking', album.id, 1)
         in_favourites = False
         if request.user.is_authenticated:
-            UsersAlbumRating.objects.get_or_create(user=request.user, album=album, rating=0)
+            UsersAlbumRating.objects.get_or_create(user=request.user, album=album)
             rating = \
                 list(UsersAlbumRating.objects.filter(user=request.user, album=album).values_list('rating', flat=True))[
                     0]
@@ -136,7 +137,7 @@ class ArtistDetailView(View):
 
 class AlbumsListView(ListView):
     def get(self, request, ordering='AZ', tag_slug=None, *args, **kwargs):
-        albums = Album.objects.order_by('name')
+        albums = Album.objects.order_by('name').annotate(rating_count=Count('usersalbumrating__album'))
         tag = None
         if tag_slug:
             tag = get_object_or_404(Tag, slug=tag_slug)
@@ -179,7 +180,12 @@ def rate_album(request, id, slug, nia):
         el_id = request.POST.get('el_id')
         val = request.POST.get('val')
         album = get_object_or_404(Album, id=id)
-        UsersAlbumRating.objects.filter(user=request.user, album=album).update(rating=val)
+        if 0 < int(val) <= 5:
+            UsersAlbumRating.objects.filter(user=request.user, album=album).update(rating=val)
+            rating = UsersAlbumRating.objects.filter(album=album).filter(rating__gt=0).aggregate(rating=Avg('rating')).get('rating')
+            album.rating = rating
+            album.save()
+        # Album.objects.filter(Album, id=id).update(rating=Decimal(rating))
         return HttpResponseRedirect(request.path_info)
     return HttpResponseRedirect(request.path_info)
 

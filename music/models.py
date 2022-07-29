@@ -39,6 +39,7 @@ class Album(models.Model):
                                on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager()
+    rating = models.DecimalField(max_digits=3, decimal_places=2, default=None, null=True)
 
     class Meta:
         ordering = ('name',)
@@ -54,7 +55,7 @@ class Album(models.Model):
     def get_absolute_url(self):
         nia = 1
         return reverse('music:album_detail', args=[self.id, self.slug, nia])
-
+'''
     @property
     def rating(self):
         stars_average = (UsersAlbumRating.objects.filter(album__name=self.name)
@@ -76,7 +77,7 @@ class Album(models.Model):
         else:
             stars_count_el = stars_count[0]
         return stars_count_el
-
+'''
 
 class Song(models.Model):
     name = models.CharField(max_length=200, db_index=True)
@@ -105,6 +106,18 @@ class UsersAlbumRating(models.Model):
     album = models.ForeignKey(Album, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0, blank=True)
+
+    def save(self, *args, **kwargs):
+        from music.logic import set_rating
+
+        creating = not self.id
+        old_rating = self.rating
+
+        super().save(*args, **kwargs)
+
+        new_rating = self.rating
+        if old_rating != new_rating or creating:
+            set_rating(self.album)
 
 
 class PlayList(models.Model):
