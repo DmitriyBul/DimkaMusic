@@ -24,7 +24,7 @@ class AlbumModelTest(TestCase):
         self.assertEqual(test_album.name, 'test_album_1')
 
 
-class AlbumRatingModelTest(TestCase):
+class UserLibraryModelTest(TestCase):
 
     def setUp(self):
         self.artist_1 = Artist.objects.create(name='Artist_1', slug='artist_1')
@@ -42,3 +42,33 @@ class AlbumRatingModelTest(TestCase):
         relation.delete()
         count = UserLibrarylist.objects.count()
         self.assertEqual(1, count)
+
+
+
+class UserRatingModelTest(TestCase):
+
+    def setUp(self):
+        self.artist_1 = Artist.objects.create(name='Artist_1', slug='artist_1')
+        self.album_1 = Album.objects.create(name='test_album_1', artist=self.artist_1, year=2000)
+        self.user = User.objects.create(username='test_username')
+        self.user_2 = User.objects.create(username='test_username_2')
+
+    def test_add_rating(self):
+        relation = UsersAlbumRating.objects.create(album=self.album_1, user=self.user, rating=4)
+        count = UsersAlbumRating.objects.count()
+        self.assertEqual(1, count)
+        UsersAlbumRating.objects.create(album=self.album_1, user=self.user_2, rating=2)
+        count = UsersAlbumRating.objects.count()
+        self.assertEqual(2, count)
+        relation.delete()
+        count = UsersAlbumRating.objects.count()
+        self.assertEqual(1, count)
+
+    def test_change_rating(self):
+        relation = UsersAlbumRating.objects.create(album=self.album_1, user=self.user, rating=4)
+        self.assertEqual(4, relation.rating)
+        count = UsersAlbumRating.objects.count()
+        self.assertEqual(1, count)
+        UsersAlbumRating.objects.update(album=self.album_1, user=self.user, rating=2)
+        relation_2 = UsersAlbumRating.objects.get(album=self.album_1, user=self.user)
+        self.assertEqual(2, relation_2.rating)
