@@ -7,7 +7,7 @@ from .models import Artist, Album, Song, UserLibrarylist, UsersAlbumRating, Play
 
 @admin.register(Artist)
 class ArtistAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug']
+    list_display = ['name', 'slug', 'created']
     prepopulated_fields = {'slug': ('name',)}
 
 

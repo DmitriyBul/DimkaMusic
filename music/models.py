@@ -13,6 +13,7 @@ class Artist(models.Model):
     name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, unique=True)
     image = models.ImageField(upload_to='artists/', blank=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         ordering = ('name',)
