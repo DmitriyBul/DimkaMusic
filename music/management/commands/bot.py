@@ -1,9 +1,15 @@
+from threading import Thread
+from time import sleep
+
+import schedule
 import telebot
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from telebot import types
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
+from accounts.models import TelegramUserRelation
 from music.models import Album, Artist
 import re
 
@@ -13,11 +19,34 @@ def titlecase(s):
                   s)
 
 
+def save_telegram_user(username, password, telegram_user_id):
+    username = username.replace(' ', '')
+    password = password.replace(' ', '')
+    try:
+        user = User.objects.get(username=username)
+        if user.check_password(password):
+            TelegramUserRelation.objects.get_or_create(user=user, telegram_id=telegram_user_id)
+            return True
+        else:
+            return False
+    except:
+        return False
+
+
 class Command(BaseCommand):
     help = 'Telegram-bot'
 
     def handle(self, *args, **options):
         bot = telebot.TeleBot(settings.TELEGRAM_TOKEN)
+
+        def schedule_checker():
+            while True:
+                schedule.run_pending()
+                sleep(1)
+
+        def news_sender():
+            return bot.send_message('1842229670', "This is a message to send.")
+
 
         @bot.message_handler(commands=["start"])
         def start(m, res=False):
@@ -26,7 +55,8 @@ class Command(BaseCommand):
             keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)  # наша клавиатура
             key_albums = types.KeyboardButton(text='Альбомы')
             key_artists = types.KeyboardButton(text='Исполнители')
-            keyboard.add(key_albums, key_artists)  # добавляем кнопку в клавиатуру
+            key_register = types.KeyboardButton(text='Подписаться')
+            keyboard.add(key_albums, key_artists, key_register)  # добавляем кнопку в клавиатуру
             bot.send_message(m.chat.id,
                              'Выбери интересующее: ',
                              reply_markup=keyboard)
@@ -35,6 +65,8 @@ class Command(BaseCommand):
         def handle_text(message):
             global album_search
             global artist_search
+            global authorizing
+
             if message.text.strip() == 'Альбомы':
                 answer = "Альбомы"
                 keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)  # наша клавиатура
@@ -67,6 +99,15 @@ class Command(BaseCommand):
                 album_search = True
                 bot.send_message(message.chat.id,
                                  'Альбомы')
+
+            elif message.text.strip() == 'Подписаться':
+
+                answer = "Напиши свой логин и пароль через запятую. Например: 'username, password'"
+                album_search = False
+                artist_search = False
+                authorizing = True
+                bot.send_message(message.chat.id,
+                                 'Подписка на рассылку')
 
             elif message.text.strip() == 'Исполнители':
                 answer = "Исполнители"
@@ -159,14 +200,26 @@ class Command(BaseCommand):
                         bot.send_message(message.chat.id,
                                          f'Ничего не найдено. Попробуй снова =(')
 
-
-
-
                     answer = f'Поиск завершен'
                     artist_search = False
+
+                elif authorizing:
+                    try:
+                        username = str(message.text).split(',')[0]
+                        password = str(message.text).split(',')[1]
+                        is_success = save_telegram_user(username, password, str(message.chat.id))
+
+                        if is_success:
+                            answer = f'Пользователь сохранен'
+                        else:
+                            answer = f'Не удалось найти пользователя. Попробуйте снова'
+                    except:
+                        answer = "Что-то пошло не так. Попробуйте снова"
                 else:
                     answer = "Что-то пошло не так. Попробуйте снова"
 
+            schedule.every().day.do(news_sender)
+            Thread(target=schedule_checker).start()
             bot.send_message(message.chat.id, answer)
 
         bot.polling(none_stop=True, interval=0)
