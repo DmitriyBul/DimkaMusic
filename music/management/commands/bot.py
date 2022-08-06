@@ -1,3 +1,4 @@
+from datetime import timedelta
 from threading import Thread
 from time import sleep
 
@@ -5,12 +6,13 @@ import schedule
 import telebot
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from telebot import types
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from accounts.models import TelegramUserRelation
-from music.models import Album, Artist
+from music.models import Album, Artist, UserLibrarylist
 import re
 
 
@@ -45,7 +47,19 @@ class Command(BaseCommand):
                 sleep(1)
 
         def news_sender():
-            return bot.send_message('1842229670', "This is a message to send.")
+            day = timezone.now().date() - timedelta(days=7)
+            albums = Album.objects.filter(created__gte=day)
+            for i in range(len(albums)):
+                users_ids = list(UserLibrarylist.objects.filter(album__artist=albums[i].artist).values_list('user__username', flat=True))
+                print(users_ids)
+                telegram_ids = list(TelegramUserRelation.objects.filter(user__username__in=users_ids).values_list('telegram_id', flat=True))
+                print(telegram_ids)
+                for id in telegram_ids:
+                    text = f'Добавлен новый альбом группы {albums[i].artist} - {albums[i].name}'
+                    bot.send_message(id, text)
+                    bot.send_photo(id, albums[i].image)
+
+            return
 
 
         @bot.message_handler(commands=["start"])
@@ -145,7 +159,8 @@ class Command(BaseCommand):
                 keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)  # наша клавиатура
                 key_albums = types.KeyboardButton(text='Альбомы')
                 key_artists = types.KeyboardButton(text='Исполнители')
-                keyboard.add(key_albums, key_artists)  # добавляем кнопку в клавиатуру
+                key_register = types.KeyboardButton(text='Подписаться')
+                keyboard.add(key_albums, key_artists, key_register)  # добавляем кнопку в клавиатуру
                 bot.send_message(message.chat.id,
                                  'Выбери интересующее: ',
                                  reply_markup=keyboard)
@@ -218,7 +233,7 @@ class Command(BaseCommand):
                 else:
                     answer = "Что-то пошло не так. Попробуйте снова"
 
-            schedule.every().day.do(news_sender)
+            schedule.every().week.do(news_sender)
             Thread(target=schedule_checker).start()
             bot.send_message(message.chat.id, answer)
 
